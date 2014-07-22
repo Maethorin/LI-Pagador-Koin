@@ -1,0 +1,7 @@
+.idea/
+*.pyc
+*.db
+_build/
+_static/
+_templates/
+*.egg-info/
