@@ -5,36 +5,10 @@ from pagador.envio.entities import PedidoBase
 
 
 class Pedido(PedidoBase, EntidadeSerializavel):
-    fraud_id = "FraudId"
-    reference = "Reference"
-    currency = "Currency"
-    request_date = "RequestDate"
-    price = "Price"
-    discount_percent = "DiscountPercent"
-    discount_value = "DiscountValue"
-    increase_percent = "IncreasePercent"
-    increase_value = "IncreaseValue"
-    is_gift = "IsGift"
-    payment_type = "PaymentType"
-    buyer = "Buyer"
-
-    def __init__(self, fraud_id, reference, currency, request_date, price, discount_percent, discount_value, increase_percent,
-                 increase_value, is_gift, payment_type, buyer=None):
-        self.fraud_id = CampoSerializavel(self.fraud_id, fraud_id)
-        self.reference = CampoSerializavel(self.reference, reference)
-        self.currency = CampoSerializavel(self.currency, currency)
-        self.request_date = CampoSerializavel(self.request_date, request_date)
-        self.price = CampoSerializavel(self.price, price)
-        self.discount_percent = CampoSerializavel(self.discount_percent, discount_percent)
-        self.discount_value = CampoSerializavel(self.discount_value, discount_value)
-        self.increase_percent = CampoSerializavel(self.increase_percent, increase_percent)
-        self.increase_value = CampoSerializavel(self.increase_value, increase_value)
-        self.is_gift = CampoSerializavel(self.is_gift, is_gift)
-        self.payment_type = CampoSerializavel(self.payment_type, payment_type)
-        if buyer:
-            if not issubclass(buyer.__class__, EntidadeSerializavel):
-                raise ValueError(u"O parâmetro buyer deve ser do tipo EntidadeSerializavel")
-            self.buyer = CampoSerializavel(self.buyer, buyer)
+    _atributos = ["FraudId", "Reference", "Currency", "RequestDate",
+                 "Price", "DiscountPercent", "DiscountValue", "IncreasePercent", "IncreaseValue",
+                 "IsGift", "PaymentType", "Buyer"]
+    atributos = [Atributo(atributo, eh_serializavel=(atributo == "Buyer")) for atributo in _atributos]
 
 
 class Comprador(EntidadeSerializavel):
@@ -43,45 +17,13 @@ class Comprador(EntidadeSerializavel):
         Atributo("BuyerType"), Atributo("Email"), Atributo("Documents", eh_lista=True), Atributo("AdditionalInfo", eh_lista=True)
     ]
 
-    # name = "Name"
-    # ip = "Ip"
-    # is_first_purchase = "IsFirstPurchase"
-    # is_reliable = "IsReliable"
-    # buyer_type = "BuyerType"
-    # email = "Email"
-    # documents = "Documents"
-    # additional_info = "AdditionalInfo"
-
-    # def __init__(self, *args, **kwargs):#name, ip, is_first_purchase, is_reliable, buyer_type, email, documents=None, additional_info=None):
-    #     pass
-        # self.name = CampoSerializavel(self.name, name)
-        # self.ip = CampoSerializavel(self.ip, ip)
-        # self.is_first_purchase = CampoSerializavel(self.is_first_purchase, is_first_purchase)
-        # self.is_reliable = CampoSerializavel(self.is_reliable, is_reliable)
-        # self.buyer_type = CampoSerializavel(self.buyer_type, buyer_type)
-        # self.email = CampoSerializavel(self.email, email)
-        # if documents:
-        #     self.documents = self.cria_lista_de_campo_serializavel(self.documents, documents)
-        # if additional_info:
-        #     self.additional_info = self.cria_lista_de_campo_serializavel(self.additional_info, additional_info)
-
 
 class DocumentoDeComprador(EntidadeSerializavel):
-    key = "Key"
-    value = "Value"
-
-    def __init__(self, key, value):
-        self.key = CampoSerializavel(self.key, key)
-        self.value = CampoSerializavel(self.value, value)
+    atributos = [Atributo("Key"), Atributo("Value")]
 
 
 class InformacoesDeComprador(EntidadeSerializavel):
-    key = "Key"
-    value = "Value"
-
-    def __init__(self, key, value):
-        self.key = CampoSerializavel(self.key, key)
-        self.value = CampoSerializavel(self.value, value)
+    atributos = [Atributo("Key"), Atributo("Value")]
 
 
 dados_envio = {

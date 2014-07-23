@@ -61,7 +61,7 @@ class TestComprador(mox.MoxTestBase):
         ).should.throw(ValueError, u"O parâmetro additional_info deve ser uma lista de EntidadeSerializavel")
 
     def test_to_dict_com_documentos(self):
-        documentos = [DocumentoDeComprador("CPF", "000.000.000-00"), DocumentoDeComprador("RG", "00.000.000-0")]
+        documentos = [DocumentoDeComprador(key="CPF", value="000.000.000-00"), DocumentoDeComprador(key="RG", value="00.000.000-0")]
         comprador = Comprador(name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email", documents=documentos)
         esperado = {
             "Name": "Nome", "Ip": "IP", "IsFirstPurchase": True, "IsReliable": False, "BuyerType": 1, "Email": "email",
@@ -69,36 +69,59 @@ class TestComprador(mox.MoxTestBase):
         }
         comprador.to_dict().should.be.equal(esperado)
 
-    # def test_to_dict_com_informacoes(self):
-    #     informacoes = [InformacoesDeComprador("Birthday", "data-nascimento"), InformacoesDeComprador("MotherName", "nome-da-mae")]
-    #     comprador = Comprador("Nome", "IP", True, False, 1, "email", additional_info=informacoes)
-    #     esperado = {
-    #         "Name": "Nome", "Ip": "IP", "IsFirstPurchase": True, "IsReliable": False, "BuyerType": 1, "Email": "email",
-    #         "AdditionalInfo": [info.to_dict() for info in informacoes]
-    #     }
-    #     comprador.to_dict().should.be.equal(esperado)
+    def test_to_dict_com_informacoes(self):
+        informacoes = [InformacoesDeComprador(key="Birthday", value="data-nascimento"), InformacoesDeComprador(key="MotherName", value="nome-da-mae")]
+        comprador = Comprador(name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email", additional_info=informacoes)
+        esperado = {
+            "Name": "Nome", "Ip": "IP", "IsFirstPurchase": True, "IsReliable": False, "BuyerType": 1, "Email": "email",
+            "AdditionalInfo": [info.to_dict() for info in informacoes]
+        }
+        comprador.to_dict().should.be.equal(esperado)
 
 
 class TestDocumentoDeComprador(mox.MoxTestBase):
     def test_to_dict(self):
-        documento = DocumentoDeComprador("CPF", "000.000.000-00")
+        documento = DocumentoDeComprador(key="CPF", value="000.000.000-00")
         documento.to_dict().should.be.equal({"Key": "CPF", "Value": "000.000.000-00"})
 
 
 class TestInformacoesDeComprador(mox.MoxTestBase):
     def test_to_dict(self):
-        informacoes = InformacoesDeComprador("Birthday", "data-nascimeto")
+        informacoes = InformacoesDeComprador(key="Birthday", value="data-nascimeto")
         informacoes.to_dict().should.be.equal({"Key": "Birthday", "Value": "data-nascimeto"})
 
 
 class TestPedido(mox.MoxTestBase):
     def test_valida_tipo_de_comprador(self):
         Pedido.when.called_with(
-            "fraud id", "numero pedido", "BRL", "request date", 100, 10, 0, 0, 0, False, "", buyer=self.mox.CreateMockAnything()
+            fraud_id="fraud id",
+            reference="numero pedido",
+            currency="BRL",
+            request_date="request date",
+            price=100,
+            discount_percent=10,
+            discount_value=0,
+            increase_percent=0,
+            increase_value=0,
+            is_gift=False,
+            payment_type="",
+            buyer=self.mox.CreateMockAnything()
         ).should.throw(ValueError, u"O parâmetro buyer deve ser do tipo EntidadeSerializavel")
 
     def test_to_dict_sem_comprador(self):
-        pedido = Pedido("fraud id", "numero pedido", "BRL", "request date", 100, 10, 0, 0, 0, False, "")
+        pedido = Pedido(
+            fraud_id="fraud id",
+            reference="numero pedido",
+            currency="BRL",
+            request_date="request date",
+            price=100,
+            discount_percent=10,
+            discount_value=0,
+            increase_percent=0,
+            increase_value=0,
+            is_gift=False,
+            payment_type="",
+        )
         esperado = {
             "FraudId": "fraud id",
             "Reference": "numero pedido",
@@ -115,8 +138,21 @@ class TestPedido(mox.MoxTestBase):
         pedido.to_dict().should.be.equal(esperado)
 
     def test_to_dict_com_comprador(self):
-        comprador = Comprador("Nome", "IP", True, False, 1, "email")
-        pedido = Pedido("fraud id", "numero pedido", "BRL", "request date", 100, 10, 0, 0, 0, False, "", buyer=comprador)
+        comprador = Comprador(name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email")
+        pedido = Pedido(
+            fraud_id="fraud id",
+            reference="numero pedido",
+            currency="BRL",
+            request_date="request date",
+            price=100,
+            discount_percent=10,
+            discount_value=0,
+            increase_percent=0,
+            increase_value=0,
+            is_gift=False,
+            payment_type="",
+            buyer=comprador
+        )
         esperado = {
             "FraudId": "fraud id",
             "Reference": "numero pedido",
@@ -129,6 +165,6 @@ class TestPedido(mox.MoxTestBase):
             "IncreaseValue": 0,
             "IsGift": False,
             "PaymentType": "",
-            "Buyer": comprador.to_dict()
+            "Buyer": {"Name": "Nome", "Ip": "IP", "IsFirstPurchase": True, "IsReliable": False, "BuyerType": 1, "Email": "email"}
         }
         pedido.to_dict().should.be.equal(esperado)

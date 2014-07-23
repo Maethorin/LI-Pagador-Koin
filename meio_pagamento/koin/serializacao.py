@@ -3,9 +3,10 @@ import re
 
 
 class Atributo(object):
-    def __init__(self, nome, eh_lista=False):
+    def __init__(self, nome, eh_lista=False, eh_serializavel=False):
         self.nome = nome
         self.eh_lista = eh_lista
+        self.eh_serializavel = eh_serializavel
 
 
 class CampoSerializavel(object):
@@ -40,6 +41,8 @@ class EntidadeSerializavel(object):
     def define_valor_de_atributo(self, atributo, kwargs):
         nome_python = self.nome_de_atributo_python(atributo.nome)
         if nome_python in kwargs:
+            if atributo.eh_serializavel and not issubclass(kwargs[nome_python].__class__, EntidadeSerializavel):
+                raise ValueError(u"O parâmetro {} deve ser do tipo EntidadeSerializavel".format(nome_python))
             if atributo.eh_lista:
                 valor = self.cria_lista_de_campo_serializavel(atributo.nome, kwargs[nome_python])
                 setattr(self, nome_python, valor)
