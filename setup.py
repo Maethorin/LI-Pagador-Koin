@@ -29,5 +29,5 @@ setup(
         "Topic :: Internet",
         ],
     packages=['meio_pagamento'],
-    install_requires=['distribute'],
+    install_requires=['distribute', 'li-pagador'],
 )
