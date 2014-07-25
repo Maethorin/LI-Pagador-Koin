@@ -7,6 +7,12 @@ class MeioPagamentoFormulario(object):
     consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128)
     secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128)
 
+    def define_valores_em_model(self, model, valores):
+        model.ativo = valores["ativo"]
+        model.token = valores["token"]
+        model.senha = valores["senha"]
+        return model
+
     def to_dict(self):
         return {
             "consumer_key": self.consumer_key.to_dict(),
