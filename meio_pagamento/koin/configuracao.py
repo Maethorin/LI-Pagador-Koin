@@ -63,8 +63,12 @@ class MeioPagamentoScript(object):
     def function_fraud_id(self):
         script = Script(tipo=TipoScript.javascript)
         script.adiciona_linha('$(function() {')
+        script.adiciona_linha('    var $btn = $("#btnPagador");')
+        script.adiciona_linha('    var btnHtml = $btn.html();')
+        script.adiciona_linha('    $btn.html("Aguarde...");')
         script.adiciona_linha('    GetKoinFraudID(function(guid) {')
-        script.adiciona_linha('        $("#btnPagador").data("querystring", "fraud-id=" + guid);')
+        script.adiciona_linha('        $btn.html(btnHtml);')
+        script.adiciona_linha('        $btn.data("querystring", "fraud-id=" + guid);')
         script.adiciona_linha('    });')
         script.adiciona_linha('});')
         return script
