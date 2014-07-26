@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pagador.configuracao.cadastro import CampoFormulario
+from pagador.envio.cliente import Script, TipoScript
 
 
 class MeioPagamentoFormulario(object):
@@ -35,3 +36,44 @@ class MeioPagamentoValores(object):
                 'valor': self.model.senha
             }
         }
+
+
+class MeioPagamentoScript(object):
+    source_fraud_id = Script(tipo=TipoScript.source, conteudo="//resources.koin.net.br/scripts/koin.min.js")
+    texto_pronto = Script(tipo=TipoScript.html, conteudo=u'<p>Seu pagamento está pronto pra ser efetuado. Clique no botão abaixo para enviar os dados para a Koin!</p>')
+    btn_pagador = Script(tipo=TipoScript.html, eh_template=True, conteudo='{% load filters %}<a href="{% url_loja "checkout_pagador" pedido.numero %}" id="btnPagador" class="botao principal btn-koin">Pagar com a <img src="{{ STATIC_URL }}img/formas-de-pagamento/{{ pagamento.codigo }}-logo.png" /></a>')
+
+    @property
+    def script_enviar(self):
+        script = Script(tipo=TipoScript.javascript, eh_template=True)
+        script.adiciona_linha('{% load filters %}')
+        script.adiciona_linha('    $(function() {')
+        script.adiciona_linha('        $("body").on("click", "#btnPagador", function() {')
+        script.adiciona_linha('            var $this = $(this);')
+        script.adiciona_linha('            if ($this.data("querystring")) {')
+        script.adiciona_linha('                var href = $this.attr("href");')
+        script.adiciona_linha('                $this.attr("href", href + "?" + $this.data("querystring") + "&" + "ip={% get_client_ip %}");')
+        script.adiciona_linha('                console.log($this.attr("href"));')
+        script.adiciona_linha('            }')
+        script.adiciona_linha('        });')
+        script.adiciona_linha('    });')
+        return script
+
+    @property
+    def function_fraud_id(self):
+        script = Script(tipo=TipoScript.javascript)
+        script.adiciona_linha('$(function() {')
+        script.adiciona_linha('    GetKoinFraudID(function(guid) {')
+        script.adiciona_linha('        $("#btnPagador").data("querystring", "fraud-id=" + guid);')
+        script.adiciona_linha('    });')
+        script.adiciona_linha('});')
+        return script
+
+    def to_dict(self):
+        return [
+            self.source_fraud_id.to_dict(),
+            self.function_fraud_id.to_dict(),
+            self.texto_pronto.to_dict(),
+            self.btn_pagador.to_dict(),
+            self.script_enviar.to_dict()
+        ]
