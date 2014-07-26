@@ -2,10 +2,8 @@
 
 from meio_pagamento.koin.serializacao import EntidadeSerializavel, Atributo
 
-from pagador.envio.entities import PedidoBase
 
-
-class Pedido(PedidoBase, EntidadeSerializavel):
+class Pedido(EntidadeSerializavel):
     _atributos = ["FraudId", "Reference", "Currency", "RequestDate",
                   "Price", "DiscountPercent", "DiscountValue", "IncreasePercent", "IncreaseValue",
                   "IsGift", "PaymentType", "Buyer", "Shipping", "Items"]
