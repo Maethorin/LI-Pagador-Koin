@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import mox
-from meio_pagamento.koin.envio import Comprador, Pedido, DocumentoDeComprador, InformacoesDeComprador, Telefone, Endereco, FormaEnvio, Item, AtributoDeItem
+from meio_pagamento.koin.pedido import Comprador, Pedido, DocumentoDeComprador, InformacoesDeComprador, Telefone, Endereco, FormaEnvio, Item, AtributoDeItem
 from meio_pagamento.koin.serializacao import CampoSerializavel, EntidadeSerializavel
 
 DADOS_DE_ENVIO_MODELO = {
