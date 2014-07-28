@@ -108,7 +108,7 @@ class EnviarPedido(EnviarPedidoBase):
             Item(
                 reference=item.sku,
                 description=item.nome,
-                quantity=item.quantidade,
+                quantity=formata_decimal(item.quantidade),
                 price=formata_decimal(item.preco_venda)
             )
             for item in self.pedido.itens.all()
