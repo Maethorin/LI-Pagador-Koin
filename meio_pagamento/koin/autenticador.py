@@ -21,7 +21,7 @@ class Credenciador(object):
     @property
     def hash(self):
         digest = hmac.new(settings.SECRET_KEY, self.corpo_hmac, hashlib.sha512).digest()
-        return base64.encodestring(digest)
+        return base64.encodestring(digest).replace("\n", "\\n")
 
     def obter_credenciais(self, credenciamento=None):
         return "{}{}{}".format(settings.CONSUMER_KEY, self.hash, self.timestamp)
