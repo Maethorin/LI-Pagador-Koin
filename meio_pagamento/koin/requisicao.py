@@ -12,9 +12,7 @@ class EnviarPedido(EnviarPedidoBase):
     def __init__(self, pedido, dados):
         super(EnviarPedido, self).__init__(pedido, dados)
         self._comprador_telefones = []
-        self._items = []
         self.dados = self.gerar_dados_de_envio()
-
 
     def gerar_dados_de_envio(self):
         pedido_envio = Pedido(
@@ -49,8 +47,8 @@ class EnviarPedido(EnviarPedidoBase):
                 )
             ),
             shipping=FormaEnvio(
-                price=self.pedido.price,
-                #FIXME: delivery_date
+                price=self.pedido.valor_envio,
+                delivery_date=formata_data(self.pedido.provavel_data_entrega),
                 shipping_type=1,
                 address=Endereco(
                     city=self.pedido.cliente.endereco_entrega.cidade,
@@ -100,7 +98,12 @@ class EnviarPedido(EnviarPedidoBase):
 
     @property
     def items(self):
-        self._items.append(Item(
-
-        ))
-        return self._items
+        return [
+            Item(
+                reference=item.sku,
+                description=item.nome,
+                quantity=item.quantidade,
+                price=item.preco_venda
+            )
+            for item in self.pedido.itens
+        ]
