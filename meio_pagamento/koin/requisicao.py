@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
+import json
 from meio_pagamento import settings
 from meio_pagamento.koin.pedido import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
 
 from pagador.envio.requisicao import EnviarPedidoBase
 
 
-def formata_data(data):
-    return data.strftime("%Y-%m-%d %H:%M:%S")
+def formata_data(data, hora=True):
+    if hora:
+        return data.strftime("%Y-%m-%d %H:%M:%S")
+    return data.strftime("%Y-%m-%d")
+
 
 
 def formata_decimal(valor):
@@ -23,7 +27,7 @@ class EnviarPedido(EnviarPedidoBase):
     def gerar_dados_de_envio(self):
         pedido_envio = Pedido(
             fraud_id=self.dados["fraud_id"],
-            reference=self.pedido.numero,
+            reference="#{}".format(self.pedido.numero),
             currency="BRL",
             request_date=formata_data(self.pedido.data_criacao),
             price=formata_decimal(self.pedido.valor_total),
@@ -43,7 +47,7 @@ class EnviarPedido(EnviarPedidoBase):
                 address=Endereco(
                     city=self.pedido.cliente.endereco.cidade,
                     state=self.pedido.cliente.endereco.estado,
-                    country=self.pedido.cliente.endereco.pais_extenso,
+                    country=self.pedido.cliente.endereco.pais.nome,
                     district=self.pedido.cliente.endereco.bairro,
                     street=self.pedido.cliente.endereco.endereco,
                     number=self.pedido.cliente.endereco.numero,
@@ -88,7 +92,7 @@ class EnviarPedido(EnviarPedidoBase):
     @property
     def informacao_adicional_de_comprador(self):
         if self.pedido.cliente.endereco.tipo == "PF":
-            return DocumentoDeComprador(key="Birthday", value=formata_data(self.pedido.cliente.data_nascimento))
+            return DocumentoDeComprador(key="Birthday", value=formata_data(self.pedido.cliente.data_nascimento, hora=False))
         else:
             return DocumentoDeComprador(key="RazaoSocial", value=self.pedido.cliente.endereco.razao_social)
 
@@ -109,7 +113,19 @@ class EnviarPedido(EnviarPedidoBase):
                 reference=item.sku,
                 description=item.nome,
                 quantity=formata_decimal(item.quantidade),
+                category="Desconhecida",
                 price=formata_decimal(item.preco_venda)
             )
             for item in self.pedido.itens.all()
         ]
+
+    def processar_resposta(self, resposta):
+        if resposta.status_code != 200:
+            return {"data": resposta.content, "status_code": resposta.status_code}
+        content = json.loads(resposta.content)
+        code = content.get("Code", 0)
+        if code == 200:
+            return {"data": content.get("Message", "Compra aprovada pela Koin."), "status_code": resposta.status_code}
+        if code == 999:
+            return {"data": u"Um mais dados estão inválidos: {}".format(content.get("Message", "")), "status_code": 400}
+        return {"data": content.get("Message", {}), "status_code": code}
