@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import mox
-from pagador_koin.koin.pedido import Comprador, Pedido, DocumentoDeComprador, InformacoesDeComprador, Telefone, Endereco, FormaEnvio, Item, AtributoDeItem
-from pagador_koin.koin.serializacao import CampoSerializavel, EntidadeSerializavel
+from pagador_koin.extensao.pedido import Comprador, Pedido, DocumentoDeComprador, InformacoesDeComprador, Telefone, Endereco, FormaEnvio, Item, AtributoDeItem
+from pagador_koin.extensao.serializacao import CampoSerializavel, EntidadeSerializavel
 
 DADOS_DE_ENVIO_MODELO = {
     "FraudId": "fraud id", # Vai vir da página dentro de um json/dicionario - É obrigatório

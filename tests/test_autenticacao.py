@@ -5,7 +5,7 @@ import hmac
 
 import mox
 
-from pagador_koin.koin import autenticador
+from pagador_koin.extensao import autenticador
 
 
 class TestMontaCredenciais(mox.MoxTestBase):

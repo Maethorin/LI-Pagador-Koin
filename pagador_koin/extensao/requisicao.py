@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from pagador_koin import settings
-from pagador_koin.koin.pedido import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
+from pagador_koin.extensao.pedido import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
 
 from pagador.envio.requisicao import EnviarPedidoBase
 
