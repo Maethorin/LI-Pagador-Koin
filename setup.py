@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name='li-pagador-koin',
-    version='0.0.1a',
+    version='0.0.2a',
     url='https://github.com/lojaintegrada/LI-Pagador-Koin',
     license='MIT',
     description='Meio de pagamento usando o Koin (http://www.koin.com.br/)',
@@ -29,6 +29,7 @@ setup(
         "Topic :: Internet",
     ],
     packages=find_packages('src'),
+    package_dir={'': 'src'},
     install_requires=['distribute'],
     dependency_links=['git+ssh://git@github.com/lojaintegrada/LI-Pagador.git']
 )
