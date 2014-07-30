@@ -54,6 +54,7 @@ class MeioPagamentoScript(object):
         script.adiciona_linha('                var href = $this.attr("href");')
         script.adiciona_linha('                $this.attr("href", href + "?" + $this.data("querystring") + "&" + "ip={% get_client_ip %}");')
         script.adiciona_linha('            }')
+        script.adiciona_linha('            $this.text("Aguarde...")')
         script.adiciona_linha('        });')
         script.adiciona_linha('    });')
         return script
