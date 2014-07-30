@@ -29,8 +29,6 @@ setup(
         "Topic :: Internet",
     ],
     packages=['pagador_koin'],
-    install_requires=[
-        'distribute',
-        'git+ssh://git@github.com/lojaintegrada/LI-Pagador.git'
-    ]
+    install_requires=['distribute'],
+    dependency_links=['git+ssh://git@github.com/lojaintegrada/LI-Pagador.git']
 )
