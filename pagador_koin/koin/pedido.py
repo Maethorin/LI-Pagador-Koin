@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from meio_pagamento.koin.serializacao import EntidadeSerializavel, Atributo
+from pagador_koin.koin.serializacao import EntidadeSerializavel, Atributo
 
 
 class Pedido(EntidadeSerializavel):

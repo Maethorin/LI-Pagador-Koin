@@ -5,7 +5,7 @@ import hmac
 
 import time
 from datetime import datetime
-from meio_pagamento import settings
+from pagador_koin import settings
 
 
 class Credenciador(object):

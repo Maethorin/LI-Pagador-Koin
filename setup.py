@@ -9,9 +9,9 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name='meio_pagamento-koin',
+    name='li-pagador-koin',
     version='develop',
-    url='https://github.com/lojaintegrada/meio_pagamento-koin',
+    url='https://github.com/lojaintegrada/LI-Pagador-Koin',
     license='MIT',
     description='Meio de pagamento usando o Koin (http://www.koin.com.br/)',
     author=u'Loja Integrada',
@@ -27,7 +27,10 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Internet",
-        ],
-    packages=['meio_pagamento'],
-    install_requires=['distribute', 'li-pagador'],
+    ],
+    packages=['pagador_koin'],
+    install_requires=[
+        'distribute',
+        'git+ssh://git@github.com/lojaintegrada/LI-Pagador.git'
+    ]
 )
