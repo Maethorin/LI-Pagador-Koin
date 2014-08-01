@@ -40,39 +40,26 @@ class MeioPagamentoValores(object):
 
 class MeioPagamentoScript(object):
     source_fraud_id = Script(tipo=TipoScript.source, conteudo="//resources.koin.net.br/scripts/koin.min.js")
-    texto_pronto = Script(tipo=TipoScript.html, conteudo=u'<p class="koin-mensagem alert alert-warning">Carregando informações do Boleto Koin. Por favor aguarde...</p>')
-    btn_pagador = Script(tipo=TipoScript.html, eh_template=True, conteudo='{% load filters %}<a style="display:none;" href="{% url_loja "checkout_pagador" pedido.numero pagamento.id %}" id="btnPagador" class="botao principal btn-koin">Efetuar pagamento</a>')
+    mensagem_aguarde = Script(tipo=TipoScript.html, conteudo=u'<p class="koin-mensagem alert alert-warning">Comunicando com a Koin. Por favor aguarde...</p>')
 
     @property
-    def script_enviar(self):
+    def function_enviar(self):
         script = Script(tipo=TipoScript.javascript, eh_template=True)
         script.adiciona_linha('{% load filters %}')
-        script.adiciona_linha('    $(function() {')
-        script.adiciona_linha('        $("body").on("click", "#btnPagador", function() {')
-        script.adiciona_linha('            var $this = $(this);')
-        script.adiciona_linha('            if ($this.data("querystring")) {')
-        script.adiciona_linha('                var href = $this.attr("href");')
-        script.adiciona_linha('                $this.attr("href", href + "?" + $this.data("querystring") + "&" + "ip={% get_client_ip %}");')
-        script.adiciona_linha('            }')
-        script.adiciona_linha('            $this.text("Aguarde...")')
-        script.adiciona_linha('        });')
-        script.adiciona_linha('    });')
-        return script
-
-    @property
-    def function_fraud_id(self):
-        script = Script(tipo=TipoScript.javascript)
         script.adiciona_linha('$(function() {')
-        script.adiciona_linha('    var $btn = $("#btnPagador");')
-        script.adiciona_linha('    var btnHtml = $btn.html();')
-        script.adiciona_linha('    $btn.html("Aguarde...");')
         script.adiciona_linha('    GetKoinFraudID(function(guid) {')
-        script.adiciona_linha('        $btn.html(btnHtml);')
-        script.adiciona_linha('        $btn.data("querystring", "fraud-id=" + guid);')
         script.adiciona_linha('        var $koinMensagem = $(".koin-mensagem");')
-        script.adiciona_linha('        $koinMensagem.text("Seu pedido está pronto para ser pago!");')
-        script.adiciona_linha('        $koinMensagem.toggleClass("alert-warning alert-success", "fast");')
-        script.adiciona_linha('        $btn.slideDown();')
+        script.adiciona_linha('        $koinMensagem.text("Comunicação estabelecida! Enviando seu pedido");')
+        script.adiciona_linha('        $.getJSON("{% url_loja "checkout_pagador" pedido.numero pagamento.id %}?fraud-id=" + guid + "&ip={% get_client_ip %}")')
+        script.adiciona_linha('            .done(function(data) {')
+        script.adiciona_linha('                  if (data.sucesso) {')
+        script.adiciona_linha('                      $koinMensagem.toggleClass("alert-warning alert-success", 600);')
+        script.adiciona_linha('                  }')
+        script.adiciona_linha('                  else {')
+        script.adiciona_linha('                      $koinMensagem.toggleClass("alert-warning alert-danger", 600);')
+        script.adiciona_linha('                  }')
+        script.adiciona_linha('                  console.log(data); $koinMensagem.text(data.mensagem);')
+        script.adiciona_linha('            });')
         script.adiciona_linha('    });')
         script.adiciona_linha('});')
         return script
@@ -80,8 +67,6 @@ class MeioPagamentoScript(object):
     def to_dict(self):
         return [
             self.source_fraud_id.to_dict(),
-            self.function_fraud_id.to_dict(),
-            self.texto_pronto.to_dict(),
-            self.btn_pagador.to_dict(),
-            self.script_enviar.to_dict()
+            self.function_enviar.to_dict(),
+            self.mensagem_aguarde.to_dict()
         ]
