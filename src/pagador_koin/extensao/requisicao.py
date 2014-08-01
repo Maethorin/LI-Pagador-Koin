@@ -55,7 +55,7 @@ class EnviarPedido(EnviarPedidoBase):
     def gerar_dados_de_envio(self):
         pedido_envio = Pedido(
             fraud_id=self.dados["fraud_id"],
-            reference="#{}".format(self.pedido.numero),
+            reference="{:03d}".format(self.pedido.numero),
             currency="BRL",
             request_date=formata_data(self.pedido.data_criacao),
             price=formata_decimal(self.pedido.valor_total),
