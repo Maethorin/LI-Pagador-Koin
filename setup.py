@@ -25,7 +25,7 @@
 
 import os
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, findall
 
 
 def read(fname):
@@ -53,6 +53,7 @@ setup(
     ],
     packages=find_packages('src'),
     package_dir={'': 'src'},
+    data_files=[('pagador_koin/extensao/templates', findall("src/pagador_koin/extensao/templates"))],
     install_requires=['distribute'],
     dependency_links=['git+ssh://git@github.com/lojaintegrada/LI-Pagador.git']
 )
