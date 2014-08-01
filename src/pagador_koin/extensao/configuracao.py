@@ -5,8 +5,8 @@ from pagador.envio.cliente import Script, TipoScript
 
 
 class MeioPagamentoFormulario(object):
-    consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128)
-    secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128)
+    consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128, ordem=1)
+    secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128, ordem=2)
 
     def define_valores_em_model(self, model, valores):
         model.ativo = valores["ativo"]
