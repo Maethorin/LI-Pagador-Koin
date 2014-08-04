@@ -2,7 +2,7 @@
 import os
 
 from pagador.configuracao.cadastro import CampoFormulario
-from pagador.envio.cliente import Script, TipoScript
+from pagador.configuracao.cliente import Script, TipoScript
 
 
 class MeioPagamentoFormulario(object):
@@ -39,7 +39,7 @@ class MeioPagamentoValores(object):
         }
 
 
-class MeioPagamentoScript(object):
+class MeioPagamentoEnvio(object):
     source_fraud_id = Script(tipo=TipoScript.source, conteudo="//resources.koin.net.br/scripts/koin.min.js")
 
     def _caminho_do_arquivo(self, arquivo):
@@ -65,3 +65,10 @@ class MeioPagamentoScript(object):
             self.function_enviar.to_dict(),
             self.mensagens.to_dict()
         ]
+
+
+class MeioPagamentoSelecao(object):
+    logo = ""
+    titulo = ""
+    url_termos = ""
+    observacao = ""

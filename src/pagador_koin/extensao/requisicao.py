@@ -42,7 +42,6 @@ def formata_data(data, hora=True):
     return data.strftime("%Y-%m-%d")
 
 
-
 def formata_decimal(valor):
     return '{0:.3g}'.format(valor)
 
