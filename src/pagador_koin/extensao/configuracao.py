@@ -5,10 +5,19 @@ from pagador.configuracao.cadastro import CampoFormulario
 from pagador.configuracao.cliente import Script, TipoScript
 
 
+def caminho_do_arquivo_de_template(arquivo):
+    diretorio = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(diretorio, "templates", arquivo)
+
+
 class MeioPagamentoAjuda(object):
     @property
     def descricao_para_lojista(self):
-        return Script(tipo=TipoScript.html, conteudo="Descrição para o lojista!")
+        script = Script(tipo=TipoScript.html)
+        script.adiciona_linha('<p>A <a href="http://www.koin.com.br" target="_blank">Koin</a> é um novo modelo de negócio para suas vendas online.</p>')
+        script.adiciona_linha('<p>Proporcione ao seu cliente a experiência do pós-pago. Ofereça o benefício de pagar pelo pedido só depois de receber!</p>')
+        script.adiciona_linha('<p>Vendas sem o risco da inadimplência e fraude, a Koin assume todos os riscos.</p>')
+        return script
 
     def to_dict(self):
         return [
@@ -39,10 +48,6 @@ class MeioPagamentoValores(object):
 
     def to_dict(self):
         return {
-            'descricao': {
-                'campo': 'descricao',
-                'valor': u"Este texto descrive o que é a Koin para um lojista"
-            },
             'consumer_key': {
                 'campo': 'token',
                 'valor': self.model.token
@@ -57,21 +62,17 @@ class MeioPagamentoValores(object):
 class MeioPagamentoEnvio(object):
     source_fraud_id = Script(tipo=TipoScript.source, conteudo="//resources.koin.net.br/scripts/koin.min.js")
 
-    def _caminho_do_arquivo(self, arquivo):
-        diretorio = os.path.dirname(os.path.realpath(__file__))
-        return os.path.join(diretorio, "templates", arquivo)
-
     @property
     def css(self):
-        return Script(tipo=TipoScript.css, caminho_arquivo=self._caminho_do_arquivo("style.css"))
+        return Script(tipo=TipoScript.css, caminho_arquivo=caminho_do_arquivo_de_template("style.css"))
 
     @property
     def function_enviar(self):
-        return Script(tipo=TipoScript.javascript, eh_template=True, caminho_arquivo=self._caminho_do_arquivo("javascript.js"))
+        return Script(tipo=TipoScript.javascript, eh_template=True, caminho_arquivo=caminho_do_arquivo_de_template("javascript.js"))
 
     @property
     def mensagens(self):
-        return Script(tipo=TipoScript.html, caminho_arquivo=self._caminho_do_arquivo("mensagens.html"))
+        return Script(tipo=TipoScript.html, caminho_arquivo=caminho_do_arquivo_de_template("mensagens.html"))
 
     def to_dict(self):
         return [
@@ -83,7 +84,15 @@ class MeioPagamentoEnvio(object):
 
 
 class MeioPagamentoSelecao(object):
-    logo = ""
-    titulo = ""
-    url_termos = ""
-    observacao = ""
+    logo = Script(tipo=TipoScript.html, nome="logo", conteudo=u'<img src="{{ STATIC_URL }}novo-template/img/bandeiras/koin-pos-pago.png" title="Koin Pós-Pago" alt="Koin Pós-Pago">', eh_template=True)
+    html_termos = Script(tipo=TipoScript.html, nome="aceite", conteudo=u'<div class="checkbox"><label><input class="form-control" type="checkbox" id="aceiteTermosKoin"> Lí e aceito os <a href="https://www.koin.com.br/home/termos" target="_blank" title="Termos e Serviços da Koin Pós-Pago">Termos de Serviço</a>.<label></div>')
+    observacao = Script(tipo=TipoScript.html, nome="explicativo", conteudo=u'<div>Escolha a Koin e pague pelo produto somente após recebê-lo. Para mais informações, <a href="http://www.koin.com.br/" target="_blank">clique aqui</a>. </div>')
+    script_aceite_termos = Script(tipo=TipoScript.javascript, nome="script_aceite", caminho_arquivo=caminho_do_arquivo_de_template("aceite.js"))
+
+    def to_dict(self):
+        return [
+            self.logo.to_dict(),
+            self.html_termos.to_dict(),
+            self.observacao.to_dict(),
+            self.script_aceite_termos.to_dict()
+        ]
