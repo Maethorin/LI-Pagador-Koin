@@ -153,6 +153,8 @@ class EnviarPedido(EnviarPedidoBase):
         ]
 
     def processar_resposta(self, resposta):
+        if resposta.status_code == 403:
+            return {"content": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status": resposta.status_code}
         if resposta.status_code != 200:
             return {"content": resposta.content, "status": resposta.status_code}
         content = json.loads(resposta.content)
