@@ -53,7 +53,8 @@ setup(
     ],
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    data_files=[('pagador_koin/extensao/templates', findall("src/pagador_koin/extensao/templates"))],
+    include_package_data=True,
+    package_data={'pagador_koin': 'extensao/templates/*'},
     install_requires=['distribute'],
     dependency_links=['git+ssh://git@github.com/lojaintegrada/LI-Pagador.git']
 )
