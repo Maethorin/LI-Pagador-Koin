@@ -5,9 +5,20 @@ from pagador.configuracao.cadastro import CampoFormulario
 from pagador.configuracao.cliente import Script, TipoScript
 
 
+class MeioPagamentoAjuda(object):
+    @property
+    def descricao_para_lojista(self):
+        return Script(tipo=TipoScript.html, conteudo="Descrição para o lojista!")
+
+    def to_dict(self):
+        return [
+            self.descricao_para_lojista.to_dict()
+        ]
+
+
 class MeioPagamentoFormulario(object):
-    consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128, ordem=1)
-    secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128, ordem=2)
+    consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128, ordem=2)
+    secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128, ordem=3)
 
     def define_valores_em_model(self, model, valores):
         model.ativo = valores["ativo"]
@@ -28,6 +39,10 @@ class MeioPagamentoValores(object):
 
     def to_dict(self):
         return {
+            'descricao': {
+                'campo': 'descricao',
+                'valor': u"Este texto descrive o que é a Koin para um lojista"
+            },
             'consumer_key': {
                 'campo': 'token',
                 'valor': self.model.token
