@@ -9,16 +9,9 @@ from pagador_koin import settings
 
 
 class Credenciador(object):
-
-    @property
-    def consumer_key(self):
-        if settings.DEBUG:
-            return settings.CONSUMER_KEY
-
-    @property
-    def secret_key(self):
-        if settings.DEBUG:
-            return settings.SECRET_KEY
+    def __init__(self, credenciamento):
+        self.secret_key = str(credenciamento["senha"])
+        self.consumer_key = str(credenciamento["token"])
 
     @property
     def timestamp(self):
@@ -33,5 +26,5 @@ class Credenciador(object):
         digest = hmac.new(self.secret_key, self.corpo_hmac, hashlib.sha512).digest()
         return base64.b64encode(digest)
 
-    def obter_credenciais(self, credenciamento=None):
+    def obter_credenciais(self):
         return "{},{},{}".format(self.consumer_key, self.hash, self.timestamp)

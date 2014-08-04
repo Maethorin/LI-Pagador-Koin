@@ -47,11 +47,15 @@ def formata_decimal(valor):
 
 
 class EnviarPedido(EnviarPedidoBase):
-    def __init__(self, meio_pagamento, pedido, dados, usa_autenticacao=True):
-        super(EnviarPedido, self).__init__(meio_pagamento, pedido, dados, usa_autenticacao=usa_autenticacao)
+    def __init__(self, meio_pagamento, pedido, dados, usa_autenticacao=True, configuracao_pagamento=None):
+        super(EnviarPedido, self).__init__(meio_pagamento, pedido, dados, usa_autenticacao=usa_autenticacao, configuracao_pagamento=configuracao_pagamento)
         self._comprador_telefones = []
         self.dados = self.gerar_dados_de_envio()
         self.url = settings.REQUEST_URL
+
+    @property
+    def chaves_credenciamento(self):
+        return ["token", "senha"]
 
     def gerar_dados_de_envio(self):
         pedido_envio = Pedido(
