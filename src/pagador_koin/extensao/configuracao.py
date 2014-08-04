@@ -3,6 +3,7 @@ import os
 
 from pagador.configuracao.cadastro import CampoFormulario
 from pagador.configuracao.cliente import Script, TipoScript
+from pagador_koin import settings
 
 
 def caminho_do_arquivo_de_template(arquivo):
@@ -60,7 +61,7 @@ class MeioPagamentoValores(object):
 
 
 class MeioPagamentoEnvio(object):
-    source_fraud_id = Script(tipo=TipoScript.source, conteudo="//resources.koin.net.br/scripts/koin.min.js")
+    source_fraud_id = Script(tipo=TipoScript.source, conteudo="//resources.koin.{}.br/scripts/koin.min.js".format(("net" if settings.DEBUG else "com")))
 
     @property
     def css(self):
