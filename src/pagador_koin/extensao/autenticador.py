@@ -6,9 +6,10 @@ import hmac
 import time
 from datetime import datetime
 from pagador_koin import settings
+from pagador.seguranca import autenticador
 
 
-class Credenciador(object):
+class Credenciador(autenticador.Credenciador):
     def __init__(self, credenciamento):
         self.secret_key = str(credenciamento["senha"])
         self.consumer_key = str(credenciamento["token"])

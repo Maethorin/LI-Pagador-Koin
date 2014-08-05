@@ -17,7 +17,7 @@ class TestMontaCredenciais(mox.MoxTestBase):
         autenticador.settings.CONSUMER_KEY = "CONSUMER_KEY"
         self.mox.StubOutWithMock(autenticador, 'datetime')
         self.mox.StubOutWithMock(autenticador, 'time')
-        self.credenciador = autenticador.Credenciador()
+        self.credenciador = autenticador.Credenciador({"senha": "SECRET_KEY", "token": "CONSUMER_KEY"})
         utc_now = self.mox.CreateMockAnything()
         utc_now.timetuple().AndReturn("12333")
         autenticador.datetime.utcnow().AndReturn(utc_now)
@@ -80,7 +80,7 @@ class TestHashPHP(mox.MoxTestBase):
         self.mox.StubOutWithMock(autenticador, 'datetime')
         self.mox.StubOutWithMock(autenticador, 'time')
         self.gera_expectativa_datetime()
-        self.credenciador = autenticador.Credenciador()
+        self.credenciador = autenticador.Credenciador({"senha": "FEDCBA09876543211234567890ABCDEF", "token": "1234567890ABCDEFFEDCBA0987654321"})
 
     def test_deve_gerar_o_corpo_hmac_certo(self):
         self.mox.ReplayAll()
