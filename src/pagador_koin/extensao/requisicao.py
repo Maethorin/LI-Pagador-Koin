@@ -3,7 +3,6 @@ import json
 from pagador_koin import settings
 from pagador_koin.extensao.pedido import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
 
-from pagador.envio.requisicao import EnviarPedidoBase
 
 MENSAGENS_RETORNO = {
     "0": u"Código de retorno inválido",
@@ -46,20 +45,22 @@ def formata_decimal(valor):
     return '{0:.3g}'.format(valor)
 
 
-class EnviarPedido(EnviarPedidoBase):
-    def __init__(self, meio_pagamento, pedido, dados, usa_autenticacao=True, configuracao_pagamento=None):
-        super(EnviarPedido, self).__init__(meio_pagamento, pedido, dados, usa_autenticacao=usa_autenticacao, configuracao_pagamento=configuracao_pagamento)
+class EnviarPedido(object):
+    def __init__(self, pedido, dados):
+        self.pedido = pedido
         self._comprador_telefones = []
-        self.dados = self.gerar_dados_de_envio()
+        self.dados = self.gerar_dados_de_envio(dados)
+        self.usa_autenticacao = True
+        self.processa_resposta = True
         self.url = settings.REQUEST_URL
 
     @property
     def chaves_credenciamento(self):
         return ["token", "senha"]
 
-    def gerar_dados_de_envio(self):
+    def gerar_dados_de_envio(self, dados):
         pedido_envio = Pedido(
-            fraud_id=self.dados["fraud_id"],
+            fraud_id=dados["fraud_id"],
             reference="{:03d}".format(self.pedido.numero),
             currency="BRL",
             request_date=formata_data(self.pedido.data_criacao),
@@ -69,7 +70,7 @@ class EnviarPedido(EnviarPedidoBase):
             payment_type=21,
             buyer=Comprador(
                 name=self.pedido.cliente.nome,
-                ip=self.dados["ip"],
+                ip=dados["ip"],
                 is_first_purchase=self.pedido.cliente.eh_primeira_compra_na_loja,
                 is_reliable=self.pedido.cliente.eh_confiavel,
                 buyer_type=self.tipo(),

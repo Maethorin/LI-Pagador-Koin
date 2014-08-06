@@ -10,9 +10,13 @@ from pagador.seguranca import autenticador
 
 
 class Credenciador(autenticador.Credenciador):
-    def __init__(self, credenciamento):
-        self.secret_key = str(credenciamento["senha"])
-        self.consumer_key = str(credenciamento["token"])
+    def __init__(self, configuracao):
+        self.secret_key = str(getattr(configuracao, "senha", ""))
+        self.consumer_key = str(getattr(configuracao, "token", ""))
+
+    @property
+    def chaves_credenciamento(self):
+        return ["senha", "token"]
 
     @property
     def timestamp(self):
