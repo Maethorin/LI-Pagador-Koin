@@ -11,19 +11,27 @@ def caminho_do_arquivo_de_template(arquivo):
     return os.path.join(diretorio, "templates", arquivo)
 
 
-class MeioPagamentoAjuda(object):
+class MeioPagamentoCadastro(object):
     @property
     def descricao_para_lojista(self):
-        script = Script(tipo=TipoScript.html)
+        script = Script(tipo=TipoScript.html, nome="descricao")
         script.adiciona_linha('<p>A <a href="http://www.koin.com.br" target="_blank">Koin</a> é um novo modelo de negócio para suas vendas online.</p>')
         script.adiciona_linha('<p>Proporcione ao seu cliente a experiência do pós-pago. Ofereça o benefício de pagar pelo pedido só depois de receber!</p>')
         script.adiciona_linha('<p>Vendas sem o risco da inadimplência e fraude, a Koin assume todos os riscos.</p>')
         script.adiciona_linha('<p>Para credenciar sua loja, <a href="http://www.koin.com.br/home/integracao" target="_blank">clique aqui</a>.</p>')
         return script
 
+    @property
+    def registro(self):
+        script = Script(tipo=TipoScript.html, nome="registro")
+        script.adiciona_linha(u'Envie dados para credenciar sua loja junto à Koin.<br/>')
+        script.adiciona_linha('<a href="http://www.koin.com.br/home/integracao" title="Acessar Site da Koin" class="btn btn-info btn-xs" target="_blank">Acesse</a>')
+        return script
+
     def to_dict(self):
         return [
-            self.descricao_para_lojista.to_dict()
+            self.descricao_para_lojista.to_dict(),
+            self.registro.to_dict()
         ]
 
 
