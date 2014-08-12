@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, ValoresBase
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador_koin import settings
 
@@ -35,42 +35,9 @@ class MeioPagamentoCadastro(object):
         ]
 
 
-class MeioPagamentoFormulario(object):
+class Formulario(FormularioBase):
     consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128, ordem=2)
     secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128, ordem=3)
-
-    def define_valores_em_model(self, model, valores):
-        model.ativo = valores.get("ativo", False)
-        model.token = valores.get("token", None)
-        model.senha = valores.get("senha", None)
-        return model
-
-    def to_dict(self):
-        return {
-            "consumer_key": self.consumer_key.to_dict(),
-            "secret_key": self.secret_key.to_dict()
-        }
-
-
-class MeioPagamentoValores(object):
-    def __init__(self, model):
-        self.model = model
-
-    def to_dict(self):
-        return {
-            'ativo': {
-                'campo': 'ativo',
-                'valor': self.model.ativo
-            },
-            'consumer_key': {
-                'campo': 'token',
-                'valor': self.model.token
-            },
-            'secret_key': {
-                'campo': 'senha',
-                'valor': self.model.senha
-            }
-        }
 
 
 class MeioPagamentoEnvio(object):
