@@ -5,26 +5,26 @@ import hmac
 
 import mox
 
-from pagador_koin.extensao import autenticador
+from pagador_koin.extensao import seguranca
 
 
 class TestMontaCredenciais(mox.MoxTestBase):
     def setUp(self):
         super(TestMontaCredenciais, self).setUp()
-        self.mox.StubOutWithMock(autenticador, 'settings')
-        autenticador.settings.REQUEST_URL = "REQUES_URL"
-        autenticador.settings.SECRET_KEY = "SECRET_KEY"
-        autenticador.settings.CONSUMER_KEY = "CONSUMER_KEY"
-        self.mox.StubOutWithMock(autenticador, 'datetime')
-        self.mox.StubOutWithMock(autenticador, 'time')
+        self.mox.StubOutWithMock(seguranca, 'settings')
+        seguranca.settings.REQUEST_URL = "REQUES_URL"
+        seguranca.settings.SECRET_KEY = "SECRET_KEY"
+        seguranca.settings.CONSUMER_KEY = "CONSUMER_KEY"
+        self.mox.StubOutWithMock(seguranca, 'datetime')
+        self.mox.StubOutWithMock(seguranca, 'time')
         configuracao = self.mox.CreateMockAnything()
         configuracao.senha = "SECRET_KEY"
         configuracao.token = "CONSUMER_KEY"
-        self.credenciador = autenticador.Credenciador(configuracao)
+        self.credenciador = seguranca.Credenciador(configuracao)
         utc_now = self.mox.CreateMockAnything()
         utc_now.timetuple().AndReturn("12333")
-        autenticador.datetime.utcnow().AndReturn(utc_now)
-        autenticador.time.mktime("12333").AndReturn("12333")
+        seguranca.datetime.utcnow().AndReturn(utc_now)
+        seguranca.time.mktime("12333").AndReturn("12333")
 
     def test_deve_retornar_o_timestamp_utc(self):
         self.mox.ReplayAll()
@@ -35,33 +35,33 @@ class TestMontaCredenciais(mox.MoxTestBase):
         self.credenciador.corpo_hmac.should.be.equal("REQUES_URL12333")
 
     def test_deve_retornar_base64(self):
-        self.mox.StubOutWithMock(autenticador, 'base64')
-        self.mox.StubOutWithMock(autenticador, 'hashlib')
-        self.mox.StubOutWithMock(autenticador, 'hmac')
+        self.mox.StubOutWithMock(seguranca, 'base64')
+        self.mox.StubOutWithMock(seguranca, 'hashlib')
+        self.mox.StubOutWithMock(seguranca, 'hmac')
 
-        autenticador.hashlib.sha512 = "SHA512"
+        seguranca.hashlib.sha512 = "SHA512"
         new_hmac = self.mox.CreateMockAnything()
         new_hmac.digest().AndReturn("DIGEST")
-        autenticador.hmac.new("SECRET_KEY", "REQUES_URL12333", "SHA512").AndReturn(new_hmac)
-        autenticador.base64.b64encode("DIGEST").AndReturn("HASH")
+        seguranca.hmac.new("SECRET_KEY", "REQUES_URL12333", "SHA512").AndReturn(new_hmac)
+        seguranca.base64.b64encode("DIGEST").AndReturn("HASH")
         self.mox.ReplayAll()
         self.credenciador.hash.should.be.equal("HASH")
 
     def test_deve_retornar_o_valor_completo_da_credencial(self):
-        self.mox.StubOutWithMock(autenticador, 'base64')
-        self.mox.StubOutWithMock(autenticador, 'hashlib')
-        self.mox.StubOutWithMock(autenticador, 'hmac')
+        self.mox.StubOutWithMock(seguranca, 'base64')
+        self.mox.StubOutWithMock(seguranca, 'hashlib')
+        self.mox.StubOutWithMock(seguranca, 'hmac')
 
-        autenticador.hashlib.sha512 = "SHA512"
+        seguranca.hashlib.sha512 = "SHA512"
         new_hmac = self.mox.CreateMockAnything()
         new_hmac.digest().AndReturn("DIGEST")
-        autenticador.hmac.new("SECRET_KEY", "REQUES_URL12333", "SHA512").AndReturn(new_hmac)
-        autenticador.base64.b64encode("DIGEST").AndReturn("HASH")
+        seguranca.hmac.new("SECRET_KEY", "REQUES_URL12333", "SHA512").AndReturn(new_hmac)
+        seguranca.base64.b64encode("DIGEST").AndReturn("HASH")
 
         utc_now = self.mox.CreateMockAnything()
         utc_now.timetuple().AndReturn("12333")
-        autenticador.datetime.utcnow().AndReturn(utc_now)
-        autenticador.time.mktime("12333").AndReturn("12333")
+        seguranca.datetime.utcnow().AndReturn(utc_now)
+        seguranca.time.mktime("12333").AndReturn("12333")
 
         self.mox.ReplayAll()
         self.credenciador.obter_credenciais().should.be.equal("CONSUMER_KEY,HASH,12333")
@@ -71,22 +71,22 @@ class TestHashPHP(mox.MoxTestBase):
     def gera_expectativa_datetime(self):
         utc_now = self.mox.CreateMockAnything()
         utc_now.timetuple().AndReturn('TUPLE')
-        autenticador.datetime.utcnow().AndReturn(utc_now)
-        autenticador.time.mktime('TUPLE').AndReturn(1406729630)
+        seguranca.datetime.utcnow().AndReturn(utc_now)
+        seguranca.time.mktime('TUPLE').AndReturn(1406729630)
 
     def setUp(self):
         super(TestHashPHP, self).setUp()
-        self.mox.StubOutWithMock(autenticador, 'settings')
-        autenticador.settings.REQUEST_URL = "http://api.koin.net.br/V1/TransactionService.svc/Request"
-        autenticador.settings.SECRET_KEY = "FEDCBA09876543211234567890ABCDEF"
-        autenticador.settings.CONSUMER_KEY = "1234567890ABCDEFFEDCBA0987654321"
-        self.mox.StubOutWithMock(autenticador, 'datetime')
-        self.mox.StubOutWithMock(autenticador, 'time')
+        self.mox.StubOutWithMock(seguranca, 'settings')
+        seguranca.settings.REQUEST_URL = "http://api.koin.net.br/V1/TransactionService.svc/Request"
+        seguranca.settings.SECRET_KEY = "FEDCBA09876543211234567890ABCDEF"
+        seguranca.settings.CONSUMER_KEY = "1234567890ABCDEFFEDCBA0987654321"
+        self.mox.StubOutWithMock(seguranca, 'datetime')
+        self.mox.StubOutWithMock(seguranca, 'time')
         self.gera_expectativa_datetime()
         configuracao = self.mox.CreateMockAnything()
         configuracao.senha = "FEDCBA09876543211234567890ABCDEF"
         configuracao.token = "1234567890ABCDEFFEDCBA0987654321"
-        self.credenciador = autenticador.Credenciador(configuracao)
+        self.credenciador = seguranca.Credenciador(configuracao)
 
     def test_deve_gerar_o_corpo_hmac_certo(self):
         self.mox.ReplayAll()
