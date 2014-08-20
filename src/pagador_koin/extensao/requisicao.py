@@ -129,14 +129,20 @@ class EnviarPedido(object):
         else:
             return DocumentoDeComprador(key="RazaoSocial", value=self.pedido.cliente.endereco.razao_social)
 
+    def _converte_tel_em_tupla_com_ddd(self, telefone):
+        return telefone[:2], telefone[2:]
+
     @property
     def telefones(self):
         if self.pedido.cliente.telefone_principal:
-            self._comprador_telefones.append(Telefone(area_code=self.pedido.cliente.telefone_principal[:1], number=self.pedido.cliente.telefone_principal[1:], phone_type=2))
+            numero = self._converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_principal)
+            self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=2))
         if self.pedido.cliente.telefone_comercial:
-            self._comprador_telefones.append(Telefone(area_code=self.pedido.cliente.telefone_comercial[:1], number=self.pedido.cliente.telefone_comercial[1:], phone_type=3))
+            numero = self._converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_comercial)
+            self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=3))
         if self.pedido.cliente.telefone_celular:
-            self._comprador_telefones.append(Telefone(area_code=self.pedido.cliente.telefone_celular[:1], number=self.pedido.cliente.telefone_celular[1:], phone_type=4))
+            numero = self._converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_celular)
+            self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=4))
         return self._comprador_telefones
 
     @property
