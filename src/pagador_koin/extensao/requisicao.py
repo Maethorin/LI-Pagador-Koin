@@ -65,7 +65,6 @@ class EnviarPedido(object):
             currency="BRL",
             request_date=formata_data(self.pedido.data_criacao),
             price=formata_decimal(self.pedido.valor_total),
-            discount_value=formata_decimal(self.pedido.valor_desconto),
             is_gift=False,
             payment_type=21,
             buyer=Comprador(
