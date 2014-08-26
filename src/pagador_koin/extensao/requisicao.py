@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
+from pagador.envio.requisicao import Enviar
 from pagador_koin import settings
-from pagador_koin.extensao.pedido import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
+from pagador_koin.extensao.envio import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
 
 
 MENSAGENS_RETORNO = {
@@ -35,22 +36,12 @@ MENSAGENS_RETORNO = {
 }
 
 
-def formata_data(data, hora=True):
-    if hora:
-        return data.strftime("%Y-%m-%d %H:%M:%S")
-    return data.strftime("%Y-%m-%d")
-
-
-def formata_decimal(valor):
-    return '{0:.3g}'.format(valor)
-
-
-class EnviarPedido(object):
+class EnviarPedido(Enviar):
     def __init__(self, pedido, dados):
         self.pedido = pedido
         self._comprador_telefones = []
         self.dados = self.gerar_dados_de_envio(dados)
-        self.usa_autenticacao = True
+        self.autenticacao_por_http = True
         self.processa_resposta = True
         self.url = settings.REQUEST_URL
 
@@ -63,8 +54,8 @@ class EnviarPedido(object):
             fraud_id=dados["fraud_id"],
             reference="{:03d}".format(self.pedido.numero),
             currency="BRL",
-            request_date=formata_data(self.pedido.data_criacao),
-            price=formata_decimal(self.pedido.valor_total),
+            request_date=self.utils.formata_data(self.pedido.data_criacao),
+            price=self.utils.formata_decimal(self.pedido.valor_total),
             is_gift=False,
             payment_type=21,
             buyer=Comprador(
@@ -90,8 +81,8 @@ class EnviarPedido(object):
                 )
             ),
             shipping=FormaEnvio(
-                price=formata_decimal(self.pedido.valor_envio),
-                delivery_date=formata_data(self.pedido.provavel_data_entrega),
+                price=self.utils.formata_decimal(self.pedido.valor_envio),
+                delivery_date=self.utils.formata_data(self.pedido.provavel_data_entrega),
                 shipping_type=1,
                 address=Endereco(
                     city=self.pedido.endereco_entrega.cidade,
@@ -125,23 +116,20 @@ class EnviarPedido(object):
     @property
     def informacao_adicional_de_comprador(self):
         if self.pedido.cliente.endereco.tipo == "PF":
-            return DocumentoDeComprador(key="Birthday", value=formata_data(self.pedido.cliente.data_nascimento, hora=False))
+            return DocumentoDeComprador(key="Birthday", value=self.utils.formata_data(self.pedido.cliente.data_nascimento, hora=False))
         else:
             return DocumentoDeComprador(key="RazaoSocial", value=self.pedido.cliente.endereco.razao_social)
-
-    def _converte_tel_em_tupla_com_ddd(self, telefone):
-        return telefone[:2], telefone[2:]
 
     @property
     def telefones(self):
         if self.pedido.cliente.telefone_principal:
-            numero = self._converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_principal)
+            numero = self.utils.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_principal)
             self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=2))
         if self.pedido.cliente.telefone_comercial:
-            numero = self._converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_comercial)
+            numero = self.utils.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_comercial)
             self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=3))
         if self.pedido.cliente.telefone_celular:
-            numero = self._converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_celular)
+            numero = self.utils.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_celular)
             self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=4))
         return self._comprador_telefones
 
@@ -151,9 +139,9 @@ class EnviarPedido(object):
             Item(
                 reference=item.sku,
                 description=item.nome,
-                quantity=formata_decimal(item.quantidade),
+                quantity=self.utils.formata_decimal(item.quantidade),
                 category="Desconhecida",
-                price=formata_decimal(item.preco_venda)
+                price=self.utils.formata_decimal(item.preco_venda)
             )
             for item in self.pedido.itens.all()
         ]
