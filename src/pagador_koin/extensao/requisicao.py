@@ -147,6 +147,13 @@ class EnviarPedido(Enviar):
             for item in self.pedido.itens.all()
         ]
 
+    def obter_situacao_do_pedido(self, status_requisicao):
+        if status_requisicao == 200:
+            return PedidoVendaSituacao.SITUACAO_PEDIDO_PAGO
+        if status_requisicao == 998 or status_requisicao == 511:
+            return PedidoVendaSituacao.SITUACAO_PAGTO_EM_ANALISE
+        return PedidoVendaSituacao.SITUACAO_PEDIDO_CANCELADO
+
     def processar_resposta(self, resposta):
         if resposta.status_code == 403:
             return {"content": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status": resposta.status_code}
@@ -160,10 +167,3 @@ class EnviarPedido(Enviar):
         if not mensagem:
             mensagem = MENSAGENS_RETORNO[str(code)]
         return {"content": mensagem, "status": int(code)}
-
-    def obter_situacao_do_pedido(self, status_requisicao):
-        if status_requisicao == 200:
-            return PedidoVendaSituacao.SITUACAO_PEDIDO_PAGO
-        if status_requisicao == 998 or status_requisicao == 511:
-            return PedidoVendaSituacao.SITUACAO_PAGTO_EM_ANALISE
-        return PedidoVendaSituacao.SITUACAO_PEDIDO_CANCELADO
