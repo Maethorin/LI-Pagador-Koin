@@ -3,6 +3,7 @@ import json
 from pagador.envio.requisicao import Enviar
 from pagador_koin import settings
 from pagador_koin.extensao.envio import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
+from repositories.pedido.models import PedidoVendaSituacao
 
 
 MENSAGENS_RETORNO = {
@@ -159,3 +160,10 @@ class EnviarPedido(Enviar):
         if not mensagem:
             mensagem = MENSAGENS_RETORNO[str(code)]
         return {"content": mensagem, "status": int(code)}
+
+    def obter_situacao_do_pedido(self, status_requisicao):
+        if status_requisicao == 200:
+            return PedidoVendaSituacao.SITUACAO_PEDIDO_PAGO
+        if status_requisicao == 998 or status_requisicao == 511:
+            return PedidoVendaSituacao.SITUACAO_PAGTO_EM_ANALISE
+        return PedidoVendaSituacao.SITUACAO_PEDIDO_CANCELADO
