@@ -42,7 +42,7 @@ class EnviarPedido(Enviar):
         self.pedido = pedido
         self._comprador_telefones = []
         self.dados = self.gerar_dados_de_envio(dados)
-        self.autenticacao_por_http = True
+        self.exige_autenticacao = True
         self.processa_resposta = True
         self.url = settings.REQUEST_URL
         self.grava_identificador = False

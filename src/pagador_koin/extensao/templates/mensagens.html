@@ -2,12 +2,20 @@
 <div class="koin-mensagem alert-message alert-message-warning">
     <div class="msg-warning">
         <p><img src="https://www.koin.com.br/resources/images/logo-header.png"></p>
-        <h3>POR FAVOR AGUARDE, ANALISANDO DADOS</h3>
-        <div class="content">
-            <div class="spinner">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
+        <div id="aguarde">
+            <h3>POR FAVOR AGUARDE, ANALISANDO DADOS</h3>
+            <div class="content">
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </div>
+        </div>
+        <div id="jaProcessado" style="display: none;">
+            <h3>PEDIDO JÁ PROCESSADO</h3>
+            <div class="content">
+                <p class="lead">Esse pedido já foi processado: <span class="situacao-pedido" style="font-weight: bold;"></span></p>
             </div>
         </div>
     </div>

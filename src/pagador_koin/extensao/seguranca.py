@@ -5,6 +5,7 @@ import hmac
 
 import time
 from datetime import datetime
+from pagador.seguranca.autenticador import TipoAutenticacao
 from pagador_koin import settings
 from pagador.seguranca import autenticador
 
@@ -13,6 +14,7 @@ class Credenciador(autenticador.Credenciador):
     def __init__(self, configuracao):
         self.secret_key = str(getattr(configuracao, "senha", ""))
         self.consumer_key = str(getattr(configuracao, "token", ""))
+        self.tipo = TipoAutenticacao.cabecalho_http
 
     @property
     def chaves_credenciamento(self):
