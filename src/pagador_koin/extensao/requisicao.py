@@ -151,6 +151,8 @@ class EnviarPedido(Enviar):
     def obter_situacao_do_pedido(self, status_requisicao):
         if status_requisicao == 200:
             return SituacaoPedido.SITUACAO_PEDIDO_PAGO
+        if status_requisicao == 403:
+            return SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO
         if status_requisicao == 998 or status_requisicao == 511:
             return SituacaoPedido.SITUACAO_PAGTO_EM_ANALISE
         return SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
