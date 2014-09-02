@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, ValoresBase
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador_koin import settings
 
