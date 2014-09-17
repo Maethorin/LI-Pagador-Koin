@@ -46,6 +46,7 @@ class EnviarPedido(Enviar):
         self.processa_resposta = True
         self.url = settings.REQUEST_URL
         self.grava_identificador = False
+        self.envio_por_querystring = False
 
     @property
     def chaves_credenciamento(self):
