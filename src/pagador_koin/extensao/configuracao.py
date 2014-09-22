@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, CadastroBase
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador_koin import settings
 
@@ -11,7 +11,7 @@ def caminho_do_arquivo_de_template(arquivo):
     return os.path.join(diretorio, "templates", arquivo)
 
 
-class MeioPagamentoCadastro(object):
+class MeioPagamentoCadastro(CadastroBase):
     @property
     def descricao_para_lojista(self):
         script = Script(tipo=TipoScript.html, nome="descricao")
@@ -29,10 +29,12 @@ class MeioPagamentoCadastro(object):
         return script
 
     def to_dict(self):
-        return [
-            self.descricao_para_lojista.to_dict(),
-            self.registro.to_dict()
-        ]
+        return {
+            "html": [
+                self.descricao_para_lojista.to_dict(),
+                self.registro.to_dict()
+            ]
+        }
 
 
 class Formulario(FormularioBase):
