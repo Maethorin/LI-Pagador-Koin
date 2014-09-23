@@ -1,0 +1,44 @@
+{% load filters %}
+<div class="accordion-group {{ pagamento.codigo }}">
+    <label for="radio-{{ pagamento.codigo }}" class="accordion-heading" data-toggle="collapse" data-target="#escolha-{{ pagamento.codigo }}" data-parent="#formasPagamento" id="pagamento{{ pagamento.id }}">
+        <span class="radio-conteiner">
+            <input type="radio" name="forma_pagamento" id="radio-{{ pagamento.codigo }}" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} value="{{ pagamento.id }}">
+        </span>
+        <span class="forma-conteiner text-right">
+            <img src="{{ STATIC_URL }}novo-template/img/bandeiras/koin-pos-pago.png" title="Pague com Koin Pós-Pago" alt="Pague com Koin Pós-Pago" />
+        </span>
+    </label>
+    <div id="escolha-{{ pagamento.codigo }}" class="collapse">
+        <div class="accordion-inner">
+            <div>
+                Escolha a Koin e pague pelo produto somente após recebê-lo. Para mais informações, <a href="http://www.koin.com.br/" target="_blank">clique aqui</a>.
+            </div>
+            <br />
+            <script type="application/javascript">
+                $("#formas-pagamento-wrapper").on("click", "#finalizarCompra", function(event) {
+                    if (!$("#radio-koin").is(':checked')) {
+                        return true;
+                    }
+                    if (!$("#aceiteTermosKoin").is(':checked')) {
+                        alert("Você precisa aceitar os Termos de Serviço da Koin Pós-Pago.");
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+            </script>
+            <div class="alert alert-warning" role="alert">
+                <div class="checkbox">
+                    <label>
+                        <input class="form-control" type="checkbox" id="aceiteTermosKoin" /> Lí e aceito os <a href="https://www.koin.com.br/home/termos" target="_blank" title="Termos e Serviços da Koin Pós-Pago">Termos de Serviço</a>.
+                    </label>
+                </div>
+            </div>
+            <div class="text-right">
+                <span>Valor</span>
+                <h5 class="titulo cor-principal text-right pagamento-valor preco-carrinho-total">
+                    R$ {{ carrinho_subtotal|formatar_decimal_br }}
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>

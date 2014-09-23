@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, CadastroBase
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, CadastroBase, SelecaoBase
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador_koin import settings
 
@@ -66,16 +66,10 @@ class MeioPagamentoEnvio(object):
         ]
 
 
-class MeioPagamentoSelecao(object):
-    logo = Script(tipo=TipoScript.html, nome="logo", conteudo=u'<img src="{{ STATIC_URL }}novo-template/img/bandeiras/koin-pos-pago.png" title="Koin Pós-Pago" alt="Koin Pós-Pago">', eh_template=True)
-    html_termos = Script(tipo=TipoScript.html, nome="aceite", conteudo=u'<div class="alert alert-warning" role="alert"><div class="checkbox"><label><input class="form-control" type="checkbox" id="aceiteTermosKoin"> Lí e aceito os <a href="https://www.koin.com.br/home/termos" target="_blank" title="Termos e Serviços da Koin Pós-Pago">Termos de Serviço</a>.<label></div></div>')
-    observacao = Script(tipo=TipoScript.html, nome="explicativo", conteudo=u'<div>Escolha a Koin e pague pelo produto somente após recebê-lo. Para mais informações, <a href="http://www.koin.com.br/" target="_blank">clique aqui</a>. </div><br />')
-    script_aceite_termos = Script(tipo=TipoScript.javascript, nome="script_aceite", caminho_arquivo=caminho_do_arquivo_de_template("aceite.js"))
+class MeioPagamentoSelecao(SelecaoBase):
+    selecao = Script(tipo=TipoScript.html, nome="selecao", caminho_arquivo=caminho_do_arquivo_de_template("selecao.html"), eh_template=True)
 
     def to_dict(self):
         return [
-            self.logo.to_dict(),
-            self.html_termos.to_dict(),
-            self.observacao.to_dict(),
-            self.script_aceite_termos.to_dict()
+            self.selecao.to_dict()
         ]
