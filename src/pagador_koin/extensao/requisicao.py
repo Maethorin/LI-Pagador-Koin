@@ -38,10 +38,10 @@ MENSAGENS_RETORNO = {
 
 
 class EnviarPedido(Enviar):
-    def __init__(self, pedido, dados):
-        self.pedido = pedido
-        self._comprador_telefones = []
+    def __init__(self, pedido, dados, configuracao_pagamento):
+        super(EnviarPedido, self).__init__(pedido, dados, configuracao_pagamento)
         self.dados = self.gerar_dados_de_envio(dados)
+        self._comprador_telefones = []
         self.exige_autenticacao = True
         self.processa_resposta = True
         self.url = settings.REQUEST_URL
