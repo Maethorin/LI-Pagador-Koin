@@ -40,7 +40,6 @@ MENSAGENS_RETORNO = {
 class EnviarPedido(Enviar):
     def __init__(self, pedido, dados, configuracao_pagamento):
         super(EnviarPedido, self).__init__(pedido, dados, configuracao_pagamento)
-        self.dados = self.gerar_dados_de_envio(dados)
         self._comprador_telefones = []
         self.exige_autenticacao = True
         self.processa_resposta = True
@@ -52,18 +51,18 @@ class EnviarPedido(Enviar):
     def chaves_credenciamento(self):
         return ["token", "senha"]
 
-    def gerar_dados_de_envio(self, dados):
+    def gerar_dados_de_envio(self):
         pedido_envio = Pedido(
-            fraud_id=dados["fraud_id"],
+            fraud_id=self.dados["fraud_id"],
             reference="{:03d}".format(self.pedido.numero),
             currency="BRL",
-            request_date=self.utils.formata_data(self.pedido.data_criacao),
-            price=self.utils.formata_decimal(self.pedido.valor_total),
+            request_date=self.formatador.formata_data(self.pedido.data_criacao),
+            price=self.formatador.formata_decimal(self.pedido.valor_total),
             is_gift=False,
             payment_type=21,
             buyer=Comprador(
                 name=self.pedido.cliente.nome,
-                ip=dados["ip"],
+                ip=self.dados["ip"],
                 is_first_purchase=self.pedido.cliente.eh_primeira_compra_na_loja,
                 is_reliable=self.pedido.cliente.eh_confiavel,
                 buyer_type=self.tipo(),
@@ -84,8 +83,8 @@ class EnviarPedido(Enviar):
                 )
             ),
             shipping=FormaEnvio(
-                price=self.utils.formata_decimal(self.pedido.valor_envio),
-                delivery_date=self.utils.formata_data(self.pedido.provavel_data_entrega),
+                price=self.formatador.formata_decimal(self.pedido.valor_envio),
+                delivery_date=self.formatador.formata_data(self.pedido.provavel_data_entrega),
                 shipping_type=1,
                 address=Endereco(
                     city=self.pedido.endereco_entrega.cidade,
@@ -119,20 +118,20 @@ class EnviarPedido(Enviar):
     @property
     def informacao_adicional_de_comprador(self):
         if self.pedido.cliente.endereco.tipo == "PF":
-            return DocumentoDeComprador(key="Birthday", value=self.utils.formata_data(self.pedido.cliente.data_nascimento, hora=False))
+            return DocumentoDeComprador(key="Birthday", value=self.formatador.formata_data(self.pedido.cliente.data_nascimento, hora=False))
         else:
             return DocumentoDeComprador(key="RazaoSocial", value=self.pedido.cliente.endereco.razao_social)
 
     @property
     def telefones(self):
         if self.pedido.cliente.telefone_principal:
-            numero = self.utils.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_principal)
+            numero = self.formatador.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_principal)
             self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=2))
         if self.pedido.cliente.telefone_comercial:
-            numero = self.utils.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_comercial)
+            numero = self.formatador.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_comercial)
             self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=3))
         if self.pedido.cliente.telefone_celular:
-            numero = self.utils.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_celular)
+            numero = self.formatador.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_celular)
             self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=4))
         return self._comprador_telefones
 
@@ -142,9 +141,9 @@ class EnviarPedido(Enviar):
             Item(
                 reference=item.sku,
                 description=item.nome,
-                quantity=self.utils.formata_decimal(item.quantidade),
+                quantity=self.formatador.formata_decimal(item.quantidade),
                 category="Desconhecida",
-                price=self.utils.formata_decimal(item.preco_venda)
+                price=self.formatador.formata_decimal(item.preco_venda)
             )
             for item in self.pedido.itens.all()
         ]
