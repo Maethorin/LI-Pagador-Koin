@@ -33,7 +33,7 @@ def read(fname):
 
 setup(
     name='li-pagador-koin',
-    version='1.1.0',
+    version='1.1.1',
     url='https://github.com/lojaintegrada/LI-Pagador-Koin',
     license='MIT',
     description='Meio de pagamento usando o Koin (http://www.koin.com.br/)',
