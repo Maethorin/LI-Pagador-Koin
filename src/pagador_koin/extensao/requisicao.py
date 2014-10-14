@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from pagador.acesso.externo import FormatoDeEnvio
 from pagador.envio.requisicao import Enviar
 from pagador.retorno.models import SituacaoPedido
 from pagador_koin import settings
@@ -45,7 +46,7 @@ class EnviarPedido(Enviar):
         self.processa_resposta = True
         self.url = settings.REQUEST_URL
         self.grava_identificador = False
-        self.envio_por_querystring = False
+        self.formato_de_envio = FormatoDeEnvio.json
 
     @property
     def chaves_credenciamento(self):
