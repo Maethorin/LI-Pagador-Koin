@@ -84,7 +84,7 @@ class EnviarPedido(Enviar):
                 )
             ),
             shipping=FormaEnvio(
-                price=self.formatador.formata_decimal(self.pedido.valor_envio),
+                price=self.formatador.formata_decimal(self.valor_envio),
                 delivery_date=self.formatador.formata_data(self.pedido.provavel_data_entrega),
                 shipping_type=1,
                 address=Endereco(
