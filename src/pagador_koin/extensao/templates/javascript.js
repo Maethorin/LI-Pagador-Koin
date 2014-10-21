@@ -19,11 +19,11 @@ $(function() {
                         $koinMensagem.toggleClass("alert-message-warning alert-message-success");
                         $koinMensagem.find(".msg-success").show();
                     }
+                    else if (data.status == 404) {
+                        exibeMensagemErro(data.status, data.content.mensagem);
+                    }
                     else {
-                        $koinMensagem.toggleClass("alert-message-warning alert-message-danger");
-                        var $errorMessage = $("#errorMessage");
-                        $errorMessage.text(data.status + ": " + data.content.string);
-                        $koinMensagem.find(".msg-danger").show();
+                        exibeMensagemErro(data.status, data.content.string);
                     }
                 });
         });
@@ -32,5 +32,13 @@ $(function() {
         $(".situacao-pedido").text('{{ pedido.situacao }}');
         $("#aguarde").hide();
         $("#jaProcessado").show();
+    }
+
+    function exibeMensagemErro(status, mensagem) {
+        $koinMensagem.find(".msg-warning").hide();
+        $koinMensagem.toggleClass("alert-message-warning alert-message-danger");
+        var $errorMessage = $("#errorMessage");
+        $errorMessage.text(status + ": " + mensagem);
+        $koinMensagem.find(".msg-danger").show();
     }
 });
