@@ -45,7 +45,7 @@ class EnviarPedido(Enviar):
         self.exige_autenticacao = True
         self.processa_resposta = True
         self.url = settings.REQUEST_URL
-        self.grava_identificador = False
+        self.deve_gravar_dados_de_pagamento = False
         self.formato_de_envio = FormatoDeEnvio.json
 
     @property
