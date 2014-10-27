@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, CadastroBase, SelecaoBase, caminho_para_template
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, CadastroBase, SelecaoBase, caminho_para_template, FormatoDeCampo
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador_koin import settings
 
@@ -37,8 +37,8 @@ class MeioPagamentoCadastro(CadastroBase):
 
 
 class Formulario(FormularioBase):
-    consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128, ordem=2)
-    secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128, ordem=3)
+    consumer_key = CampoFormulario("token", "Consumer Key", requerido=True, tamanho_max=128, ordem=2, formato=FormatoDeCampo.ascii)
+    secret_key = CampoFormulario("senha", "Secret Key", requerido=True, tamanho_max=128, ordem=3, formato=FormatoDeCampo.ascii)
 
 
 class MeioPagamentoEnvio(object):
