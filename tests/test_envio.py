@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import mox
 from pagador_koin.extensao.envio import Comprador, Pedido, DocumentoDeComprador, InformacoesDeComprador, Telefone, Endereco, FormaEnvio, Item, AtributoDeItem
-from pagador_koin.extensao.serializacao import CampoSerializavel, EntidadeSerializavel
 
 DADOS_DE_ENVIO_MODELO = {
     "FraudId": "fraud id", # Vai vir da página dentro de um json/dicionario - É obrigatório
@@ -80,47 +79,6 @@ DADOS_DE_ENVIO_MODELO = {
 
     ]
 }
-
-
-class TestCampoJson(mox.MoxTestBase):
-    def test_campo_json_simples(self):
-        campo = CampoSerializavel("Nome", "Valor")
-        campo.to_dict().should.be.equal({"Nome": "Valor"})
-
-    def test_campo_json_com_atribuicao(self):
-        campo = CampoSerializavel("Nome")
-        campo.valor = "Valor2"
-        campo.to_dict().should.be.equal({"Nome": "Valor2"})
-
-    def test_campo_com_campo(self):
-        campo1 = CampoSerializavel("Nome", "Valor")
-        campo2 = CampoSerializavel("Nome2", campo1)
-        campo2.to_dict().should.be.equal({"Nome2": {"Nome": "Valor"}})
-
-    def test_campo_com_campo_com_campo(self):
-        campo1 = CampoSerializavel("Nome", "Valor")
-        campo2 = CampoSerializavel("Nome2", campo1)
-        campo3 = CampoSerializavel("Nome3", campo2)
-        campo3.to_dict().should.be.equal({"Nome3": {"Nome2": {"Nome": "Valor"}}})
-
-    def test_campo_com_campo_com_campo_com_campo_hehehehe(self):
-        campo1 = CampoSerializavel("Nome", "Valor")
-        campo2 = CampoSerializavel("Nome2", campo1)
-        campo3 = CampoSerializavel("Nome3", campo2)
-        campo4 = CampoSerializavel("Nome4", campo3)
-        campo4.to_dict().should.be.equal({"Nome4": {"Nome3": {"Nome2": {"Nome": "Valor"}}}})
-
-    def test_campo_json_com_json_seralizer(self):
-        class TesteSerializer(EntidadeSerializavel):
-            coisa = CampoSerializavel("Coisa")
-            outra_coisa = CampoSerializavel("Outra Coisa")
-
-            def __init__(self):
-                self.coisa.valor = "coisa"
-                self.outra_coisa.valor = "outra_coisa"
-
-        campo = CampoSerializavel("Grande Coisa", TesteSerializer())
-        campo.to_dict().should.be.equal({"Grande Coisa": {"Coisa": "coisa", "Outra Coisa": "outra_coisa"}})
 
 
 class TestComprador(mox.MoxTestBase):
