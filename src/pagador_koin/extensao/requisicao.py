@@ -52,7 +52,7 @@ class EnviarPedido(Enviar):
     def chaves_credenciamento(self):
         return ["token", "senha"]
 
-    def gerar_dados_de_envio(self):
+    def gerar_dados_de_envio(self, passo=None):
         pedido_envio = Pedido(
             fraud_id=self.dados["fraud_id"],
             reference="{:03d}".format(self.pedido.numero),
