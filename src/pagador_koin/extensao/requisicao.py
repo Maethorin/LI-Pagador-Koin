@@ -62,7 +62,7 @@ class EnviarPedido(Enviar):
             is_gift=False,
             payment_type=21,
             buyer=Comprador(
-                name=unicode(self.pedido.cliente.nome),
+                name=self.formatador.trata_unicode_com_limite(self.pedido.cliente.nome),
                 ip=self.dados["ip"],
                 is_first_purchase=self.pedido.cliente.eh_primeira_compra_na_loja,
                 is_reliable=self.pedido.cliente.eh_confiavel,
@@ -72,13 +72,13 @@ class EnviarPedido(Enviar):
                 additional_info=[self.informacao_adicional_de_comprador],
                 phones=self.telefones,
                 address=Endereco(
-                    city=unicode(self.pedido.cliente.endereco.cidade),
+                    city=self.formatador.trata_unicode_com_limite(self.pedido.cliente.endereco.cidade),
                     state=self.pedido.cliente.endereco.estado,
                     country=self.pedido.cliente.endereco.pais.nome,
-                    district=unicode(self.pedido.cliente.endereco.bairro),
-                    street=unicode(self.pedido.cliente.endereco.endereco),
+                    district=self.formatador.trata_unicode_com_limite(self.pedido.cliente.endereco.bairro),
+                    street=self.formatador.trata_unicode_com_limite(self.pedido.cliente.endereco.endereco),
                     number=self.pedido.cliente.endereco.numero,
-                    complement=unicode(self.pedido.cliente.endereco.complemento),
+                    complement=self.formatador.trata_unicode_com_limite(self.pedido.cliente.endereco.complemento),
                     zip_code=self.pedido.cliente.endereco.cep,
                     address_type=self.tipo()
                 )
@@ -88,13 +88,13 @@ class EnviarPedido(Enviar):
                 delivery_date=self.formatador.formata_data(self.pedido.provavel_data_entrega),
                 shipping_type=1,
                 address=Endereco(
-                    city=unicode(self.pedido.endereco_entrega.cidade),
+                    city=self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.cidade),
                     state=self.pedido.endereco_entrega.estado,
                     country=self.pedido.endereco_entrega.pais,
-                    district=unicode(self.pedido.endereco_entrega.bairro),
-                    street=unicode(self.pedido.endereco_entrega.endereco),
+                    district=self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.bairro),
+                    street=self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.endereco),
                     number=self.pedido.endereco_entrega.numero,
-                    complement=unicode(self.pedido.endereco_entrega.complemento),
+                    complement=self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.complemento),
                     zip_code=self.pedido.endereco_entrega.cep,
                     address_type=self.tipo(self.pedido.endereco_entrega.tipo)
                 )
@@ -121,7 +121,7 @@ class EnviarPedido(Enviar):
         if self.pedido.cliente.endereco.tipo == "PF":
             return DocumentoDeComprador(key="Birthday", value=self.formatador.formata_data(self.pedido.cliente.data_nascimento, hora=False))
         else:
-            return DocumentoDeComprador(key="RazaoSocial", value=unicode(self.pedido.cliente.endereco.razao_social))
+            return DocumentoDeComprador(key="RazaoSocial", value=self.formatador.trata_unicode_com_limite(self.pedido.cliente.endereco.razao_social))
 
     @property
     def telefones(self):
@@ -140,8 +140,8 @@ class EnviarPedido(Enviar):
     def items(self):
         return [
             Item(
-                reference=unicode(item.sku),
-                description=unicode(item.nome),
+                reference=self.formatador.trata_unicode_com_limite(item.sku),
+                description=self.formatador.trata_unicode_com_limite(item.nome),
                 quantity=self.formatador.formata_decimal(item.quantidade),
                 category="Desconhecida",
                 price=self.formatador.formata_decimal(item.preco_venda)
