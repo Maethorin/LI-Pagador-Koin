@@ -47,13 +47,14 @@ class EnviarPedido(Enviar):
         self.url = settings.REQUEST_URL
         self.deve_gravar_dados_de_pagamento = False
         self.formato_de_envio = FormatoDeEnvio.json
+        self._pedido_envio = None
 
     @property
     def chaves_credenciamento(self):
         return ["token", "senha"]
 
     def gerar_dados_de_envio(self, passo=None):
-        pedido_envio = Pedido(
+        self._pedido_envio = Pedido(
             fraud_id=self.dados["fraud_id"],
             reference="{:03d}".format(self.pedido.numero),
             currency="BRL",
@@ -101,7 +102,7 @@ class EnviarPedido(Enviar):
             ),
             items=self.items,
         )
-        return pedido_envio.to_dict()
+        return self._pedido_envio.to_dict()
 
     def tipo(self, tipo=None):
         if not tipo:
@@ -159,6 +160,8 @@ class EnviarPedido(Enviar):
         return SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
 
     def processar_resposta(self, resposta):
+        if resposta.status_code == 408:
+            return {"content": {"erro": resposta.content, "dados": self._pedido_envio.to_dict()}, "status": resposta.status_code}
         if resposta.status_code == 403:
             return {"content": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status": resposta.status_code}
         if resposta.status_code != 200:
