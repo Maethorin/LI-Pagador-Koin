@@ -1,5 +1,5 @@
 {% load filters %}
-{% if modo == "estrutura/v0" %}
+{% if modo == "v0" %}
     <li class="pagamento lista-item" id="pagamento_9" data-id="9" data-nome="Koin Pós-Pago">
         <div class="radio_button">
             <input class="forma_pagamento" type="radio" value="9" name="forma_pagamento" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} />
