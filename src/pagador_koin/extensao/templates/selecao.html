@@ -1,5 +1,5 @@
 {% load filters %}
-{% if modo == "padrao-novo" %}
+{% if modo == "v0" %}
     <li class="pagamento lista-item" id="pagamento_9" data-id="9" data-nome="Koin Pós-Pago">
         <div class="radio_button">
             <input class="forma_pagamento" type="radio" value="9" name="forma_pagamento" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} />
@@ -15,7 +15,7 @@
                 <input type="radio" name="forma_pagamento" id="{% if modo == 'modal' %}modal-{% endif %}radio-koin" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} value="9">
             </span>
             <span class="forma-conteiner text-right">
-                <img src="{{ STATIC_URL }}novo-template/img/bandeiras/koin-pos-pago.png" title="Pague com Koin Pós-Pago" alt="Pague com Koin Pós-Pago" />
+                <img src="{{ STATIC_URL }}loja/estrutura/v1/img/bandeiras/koin-pos-pago.png" title="Pague com Koin Pós-Pago" alt="Pague com Koin Pós-Pago" />
             </span>
         </label>
         <div id="{% if modo == 'modal' %}modal-{% endif %}escolha-koin" class="collapse">
