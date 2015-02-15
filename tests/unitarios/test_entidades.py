@@ -26,3 +26,8 @@ class ConfiguracaoMeioPagamento(unittest.TestCase):
     def test_deve_definir_formulario_na_inicializacao(self, preencher_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.formulario.should.be.a('pagador_koin.reloaded.cadastro.FormularioKoin')
+
+    @mock.patch('pagador_koin.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_do_gateway', autospec=True)
+    def test_deve_ser_aplicacao(self, preencher_mock):
+        configuracao = entidades.ConfiguracaoMeioPagamento(234)
+        configuracao.eh_aplicacao.should.be.falsy
