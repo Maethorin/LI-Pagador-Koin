@@ -5,9 +5,9 @@ import mock
 from pagador_koin.reloaded import entidades
 
 
-class ConfiguracaoMeioPagamento(unittest.TestCase):
+class KoinConfiguracaoMeioPagamento(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(ConfiguracaoMeioPagamento, self).__init__(*args, **kwargs)
+        super(KoinConfiguracaoMeioPagamento, self).__init__(*args, **kwargs)
         self.campos = ['ativo', 'token', 'senha']
         self.codigo_gateway = 9
 
