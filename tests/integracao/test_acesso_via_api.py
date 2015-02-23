@@ -10,7 +10,7 @@ extensibilidade.SETTINGS.EXTENSOES = {
 }
 
 
-class ConfiguracaoMeioDePagamentoDaLoja(TestBase):
+class KoinConfiguracaoMeioDePagamentoDaLoja(TestBase):
     url = '/loja/8/meio-pagamento/koin/configurar'
 
     @mock.patch('pagador_koin.reloaded.entidades.ConfiguracaoMeioPagamento')
