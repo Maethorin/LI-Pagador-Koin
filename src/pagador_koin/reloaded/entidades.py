@@ -3,10 +3,12 @@
 from pagador.reloaded import entidades
 from pagador_koin.reloaded import cadastro
 
+CODIGO_GATEWAY = 9
+
 
 class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
     _campos = ['ativo', 'token', 'senha']
-    _codigo_gateway = 9
+    _codigo_gateway = CODIGO_GATEWAY
 
     def __init__(self, loja_id, codigo_pagamento=None):
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
