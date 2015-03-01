@@ -2,9 +2,9 @@
 import base64
 import hashlib
 import hmac
-
 import time
 from datetime import datetime
+
 from pagador.seguranca.autenticador import TipoAutenticacao
 from pagador_koin import settings
 from pagador.seguranca import autenticador
