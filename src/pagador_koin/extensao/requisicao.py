@@ -45,15 +45,15 @@ class EnviarPedido(Enviar):
         self.exige_autenticacao = True
         self.processa_resposta = True
         self.url = settings.REQUEST_URL
-        self.deve_gravar_dados_de_pagamento = False
-        self.formato_de_envio = FormatoDeEnvio.json
+        self.deve_gravar_dados_pagamento = False
+        self.formato_envio = FormatoDeEnvio.json
         self._pedido_envio = None
 
     @property
     def chaves_credenciamento(self):
         return ["token", "senha"]
 
-    def gerar_dados_de_envio(self, passo=None):
+    def gerar_dados_envio(self, passo=None):
         self._pedido_envio = Pedido(
             fraud_id=self.dados["fraud_id"],
             reference="{:03d}".format(self.pedido.numero),
@@ -69,8 +69,8 @@ class EnviarPedido(Enviar):
                 is_reliable=self.pedido.cliente.eh_confiavel,
                 buyer_type=self.tipo(),
                 email=self.pedido.cliente.email,
-                documents=[self.documento_de_comprador],
-                additional_info=[self.informacao_adicional_de_comprador],
+                documents=[self.documento_comprador],
+                additional_info=[self.informacao_adicional_comprador],
                 phones=self.telefones,
                 address=Endereco(
                     city=self.formatador.trata_unicode_com_limite(self.pedido.cliente.endereco.cidade),
@@ -111,14 +111,14 @@ class EnviarPedido(Enviar):
         return tipos[tipo]
 
     @property
-    def documento_de_comprador(self):
+    def documento_comprador(self):
         if self.pedido.cliente.endereco.tipo == "PF":
             return DocumentoDeComprador(key="CPF", value=self.pedido.cliente.endereco.cpf)
         else:
             return DocumentoDeComprador(key="CNPJ", value=self.pedido.cliente.endereco.cnpj)
 
     @property
-    def informacao_adicional_de_comprador(self):
+    def informacao_adicional_comprador(self):
         if self.pedido.cliente.endereco.tipo == "PF":
             return DocumentoDeComprador(key="Birthday", value=self.formatador.formata_data(self.pedido.cliente.data_nascimento, hora=False))
         else:
@@ -150,7 +150,7 @@ class EnviarPedido(Enviar):
             for item in self.pedido.itens.all()
         ]
 
-    def obter_situacao_do_pedido(self, status_requisicao):
+    def obter_situacao_pedido(self, status_requisicao):
         if status_requisicao == 200:
             return SituacaoPedido.SITUACAO_PEDIDO_PAGO
         if status_requisicao == 403:

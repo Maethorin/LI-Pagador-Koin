@@ -47,7 +47,7 @@ class TestMontaCredenciais(mox.MoxTestBase):
         self.mox.ReplayAll()
         self.credenciador.hash.should.be.equal("HASH")
 
-    def test_deve_retornar_o_valor_completo_da_credencial(self):
+    def test_deve_retornar_o_valor_completo_credencial(self):
         self.mox.StubOutWithMock(seguranca, 'base64')
         self.mox.StubOutWithMock(seguranca, 'hashlib')
         self.mox.StubOutWithMock(seguranca, 'hmac')

@@ -150,8 +150,8 @@ class Malote(entidades.Malote):
             is_reliable=False,
             buyer_type=self.tipo(pedido.endereco_cliente['tipo']),
             email=pedido.cliente['email'],
-            documents=self.documento_de_comprador(pedido),
-            additional_info=self.informacao_adicional_de_comprador(pedido),
+            documents=self.documento_comprador(pedido),
+            additional_info=self.informacao_adicional_comprador(pedido),
             phones=self.telefones(pedido),
             address=Endereco(
                 city=self.formatador.trata_unicode_com_limite(pedido.endereco_cliente['cidade']),
@@ -183,12 +183,12 @@ class Malote(entidades.Malote):
         )
         self.items = self.monta_itens(pedido)
 
-    def documento_de_comprador(self, pedido):
+    def documento_comprador(self, pedido):
         if pedido.endereco_cliente['tipo'] == "PF":
             return [ChaveValor(key="CPF", value=pedido.endereco_cliente['cpf'])]
         return [ChaveValor(key="CNPJ", value=pedido.endereco_cliente['cnpj'])]
 
-    def informacao_adicional_de_comprador(self, pedido):
+    def informacao_adicional_comprador(self, pedido):
         if pedido.endereco_cliente['tipo'] == "PF":
             return [ChaveValor(key="Birthday", value=self.formatador.formata_data(pedido.cliente['data_nascimento'], hora=False))]
         return [ChaveValor(key="RazaoSocial", value=self.formatador.trata_unicode_com_limite(pedido.endereco_cliente['razao_social']))]
@@ -225,5 +225,5 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
 
     def __init__(self, loja_id, codigo_pagamento=None):
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
-        self.preencher_do_gateway(self._codigo_gateway, self._campos)
+        self.preencher_gateway(self._codigo_gateway, self._campos)
         self.formulario = cadastro.FormularioKoin()

@@ -81,7 +81,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
     def envia_pagamento(self, tentativa=1):
         self.resposta_koin = self.conexao.post(REQUEST_URL, self.malote.to_dict())
 
-    def processa_dados_de_pagamento(self):
+    def processa_dados_pagamento(self):
         self.resultado = self._processa_resposta()
 
     def _processa_resposta(self):
