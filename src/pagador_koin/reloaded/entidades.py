@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
-from li_common.padroes import entidades as common_entidades 
 
 from pagador.reloaded import entidades
 from pagador_koin.reloaded import cadastro
@@ -12,13 +11,7 @@ class KoinInvalido(Exception):
     pass
 
 
-class BaseParaPropriedade(common_entidades.Entidade):
-    def __init__(self, **dados):
-        for chave in self._chaves_alternativas_para_serializacao:
-            setattr(self, chave, dados.get(chave, None))
-
-
-class ChaveValor(BaseParaPropriedade):
+class ChaveValor(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {'key': 'Key', 'value': 'Value'}
 
     # def __init__(self, key, value):
@@ -26,7 +19,7 @@ class ChaveValor(BaseParaPropriedade):
     #     self.value = value
 
 
-class Item(BaseParaPropriedade):
+class Item(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {
         'reference': 'Reference',
         'description': 'Description',
@@ -45,7 +38,7 @@ class Item(BaseParaPropriedade):
     #     self.attributes = attributes
 
 
-class FormaEnvio(BaseParaPropriedade):
+class FormaEnvio(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {
         'price': 'Price', 'delivery_date': 'DeliveryDate', 'shipping_type': 'ShippingType', 'address': 'Address'
     }
@@ -57,7 +50,7 @@ class FormaEnvio(BaseParaPropriedade):
     #     self.address = address
 
 
-class Telefone(BaseParaPropriedade):
+class Telefone(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {'area_code': 'AreaCode', 'number': 'Number', 'phone_type': 'PhoneType'}
 
     # def __init__(self, number, phone_type):
@@ -67,7 +60,7 @@ class Telefone(BaseParaPropriedade):
     #     self.phone_type = phone_type
 
 
-class Endereco(BaseParaPropriedade):
+class Endereco(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {
         'city': 'City',
         'state': 'State',
@@ -92,7 +85,7 @@ class Endereco(BaseParaPropriedade):
     #     self.address_type = dados['address_type']
 
 
-class Comprador(BaseParaPropriedade):
+class Comprador(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {
         'name': 'Name',
         'ip': 'Ip',
@@ -173,7 +166,7 @@ class Malote(entidades.Malote):
             )
         )
         self.shipping = FormaEnvio(
-            price=self.formatador.formata_decimal(self.valor_envio(pedido)),
+            price=self.formatador.formata_decimal(pedido.valor_envio),
             delivery_date=self.formatador.formata_data(pedido.provavel_data_entrega),
             shipping_type=1,
             address=Endereco(

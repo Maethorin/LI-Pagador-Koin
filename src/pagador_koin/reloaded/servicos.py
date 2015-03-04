@@ -65,7 +65,7 @@ class Credenciador(servicos.Credenciador):
 
     def obter_credenciais(self):
         return '{},{},{}'.format(self.consumer_key, self.hash, self.timestamp)
-        
+
 
 class EntregaPagamento(servicos.EntregaPagamento):
     def __init__(self, loja_id, plano_indice=1):
@@ -86,8 +86,8 @@ class EntregaPagamento(servicos.EntregaPagamento):
 
     def _processa_resposta(self):
         status_code = self.resposta_koin.status_code
-        if status_code == 408:
-            return {"mensagem": u"Erro na transmissão dos dados", "status_code": status_code}
+        if self.resposta_koin.timeout:
+            return {"mensagem": u"O servidor da Koin não respondeu em tempo útil.", "status_code": status_code}
         if self.resposta_koin.nao_autenticado:
             return {"mensagem": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status_code": status_code}
         if self.resposta_koin.sucesso:
