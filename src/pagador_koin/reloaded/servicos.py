@@ -68,8 +68,8 @@ class Credenciador(servicos.Credenciador):
 
 
 class EntregaPagamento(servicos.EntregaPagamento):
-    def __init__(self, loja_id, plano_indice=1):
-        super(EntregaPagamento, self).__init__(loja_id, plano_indice)
+    def __init__(self, loja_id, plano_indice=1, dados=None):
+        super(EntregaPagamento, self).__init__(loja_id, plano_indice, dados=None)
         self.tem_malote = True
         self.faz_http = True
         self.conexao = self.obter_conexao()
