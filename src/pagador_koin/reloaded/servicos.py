@@ -73,26 +73,28 @@ class EntregaPagamento(servicos.EntregaPagamento):
         self.tem_malote = True
         self.faz_http = True
         self.conexao = self.obter_conexao()
-        self.resposta_koin = None
+        self.resposta = None
+        self.url = REQUEST_URL
 
     def define_credenciais(self):
         self.conexao.credenciador = Credenciador(configuracao=self.configuracao)
 
     def envia_pagamento(self, tentativa=1):
-        self.resposta_koin = self.conexao.post(REQUEST_URL, self.malote.to_dict())
+        self.dados_enviados = self.malote.to_dict()
+        self.resposta = self.conexao.post(self.url, self.dados_enviados)
 
     def processa_dados_pagamento(self):
         self.resultado = self._processa_resposta()
 
     def _processa_resposta(self):
-        status_code = self.resposta_koin.status_code
-        if self.resposta_koin.timeout:
+        status_code = self.resposta.status_code
+        if self.resposta.timeout:
             return {"mensagem": u"O servidor da Koin não respondeu em tempo útil.", "status_code": status_code}
-        if self.resposta_koin.nao_autenticado:
+        if self.resposta.nao_autenticado:
             return {"mensagem": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status_code": status_code}
-        if self.resposta_koin.sucesso:
-            code = self.resposta_koin.conteudo.get("Code", 0)
-            mensagem = self.resposta_koin.conteudo.get("Message", None)
+        if self.resposta.sucesso:
+            code = self.resposta.conteudo.get("Code", 0)
+            mensagem = self.resposta.conteudo.get("Message", None)
             if code == 200:
                 return {"mensagem": mensagem or "Compra aprovada pela Koin.", "status": status_code}
             if not mensagem:
