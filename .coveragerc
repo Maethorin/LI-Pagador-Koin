@@ -1,4 +1,4 @@
 [run]
 branch = True
 source =
-    pagador_koin.reloaded
+    pagador_koin

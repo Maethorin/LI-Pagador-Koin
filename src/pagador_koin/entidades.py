@@ -2,7 +2,7 @@
 from decimal import Decimal
 
 from pagador import entidades
-from pagador_koin.reloaded import cadastro
+from pagador_koin import cadastro
 
 CODIGO_GATEWAY = 9
 

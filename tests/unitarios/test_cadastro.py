@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
-from pagador_koin.reloaded import cadastro
+
+from pagador_koin import cadastro
 
 
 class FormularioKoin(unittest.TestCase):
