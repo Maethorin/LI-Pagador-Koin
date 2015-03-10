@@ -1,0 +1,30 @@
+language: python
+python:
+- '2.7'
+install:
+- pip install -e .
+- pip install coveralls
+- pip install sure
+- pip install py-inspector
+script:
+- rm -rf .coverage
+- make test
+after_success:
+- coveralls
+deploy:
+  provider: pypi
+  user: lojaintegrada
+  on:
+    tags: true
+    repo: lojaintegrada/LI-Pagador-Deposito
+    all_branches: true
+  password:
+    secure: g9w0wsHL/NfuJ4wTr587lC9TH9RteUnBm6hrnFXdZV/aqPAvxBm+8KPhdIeUiVV8OvYJhO6ca7QcWP/Ki4hLAC1gzN7CQryxnMSajZy5lMitAQAHZJjtyMcWhe4522tTiMgkVIBRGieBvTStFICgAVVPxJgjRmwtP/JFkk61AlU=
+notifications:
+  email:
+    recipients:
+    - contato@awsli.com.br
+    - marcio.duarte@lojaintegrada.com.br
+  hipchat:
+    rooms:
+      secure: AUKghelDGRRGg120uoIzaqqXrpWn1/Ibyvqfp2yakw5QOVywERUlf43ia3lAYqXklGOQj64/68rz4wUFKITiH0QciPOg4QxO/J3O50/Cr3N+sGqPndaGDCmV1gYAmdlaOkDGu3NKdJ8q2sX7rBILf8sjj7jWpJYvXBdOIS5T7Qw=
