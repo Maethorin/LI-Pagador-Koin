@@ -5,8 +5,8 @@ import hmac
 import time
 from datetime import datetime
 
-from pagador import settings
-from pagador.reloaded import servicos
+from pagador import servicos
+
 
 # REQUEST_URL = 'http://api.koin.{}.br/V1/TransactionService.svc/Request'.format('net' if settings.DEBUG else 'com')
 REQUEST_URL = 'http://api.koin.com.br/V1/TransactionService.svc/Request'
