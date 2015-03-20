@@ -7,3 +7,4 @@ _templates/
 *.egg-info/
 dist/
 build/
+.coverage

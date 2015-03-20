@@ -2,7 +2,7 @@
 import mox
 from pagador_koin.extensao.envio import Comprador, Pedido, DocumentoDeComprador, InformacoesDeComprador, Telefone, Endereco, FormaEnvio, Item, AtributoDeItem
 
-DADOS_DE_ENVIO_MODELO = {
+DADOS_ENVIO_MODELO = {
     "FraudId": "fraud id", # Vai vir da página dentro de um json/dicionario - É obrigatório
     "Reference": "numero pedido", # PedidoVenda.numero - É obrigatório
     "Currency": "BRL", # ??? - É obrigatório - A princípio será sempre BRL - É obrigatório
@@ -86,22 +86,22 @@ class TestComprador(mox.MoxTestBase):
         comprador = Comprador(name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email")
         comprador.to_dict().should.be.equal({"Name": "Nome", "Ip": "IP", "IsFirstPurchase": True, "IsReliable": False, "BuyerType": 1, "Email": "email"})
 
-    def test_valida_tipo_de_documentos(self):
+    def test_valida_tipo_documentos(self):
         Comprador.when.called_with(
             name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email", documents=["a", "b"]
         ).should.throw(ValueError, u"O parâmetro documents deve ser uma lista de EntidadeSerializavel")
 
-    def test_valida_tipo_de_informacoes(self):
+    def test_valida_tipo_informacoes(self):
         Comprador.when.called_with(
             name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email", additional_info=["a", "b"]
         ).should.throw(ValueError, u"O parâmetro additional_info deve ser uma lista de EntidadeSerializavel")
 
-    def test_valida_tipo_de_telefones(self):
+    def test_valida_tipo_telefones(self):
         Comprador.when.called_with(
             name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email", phones=["a", "b"]
         ).should.throw(ValueError, u"O parâmetro phones deve ser uma lista de EntidadeSerializavel")
 
-    def test_valida_tipo_de_endereco(self):
+    def test_valida_tipo_endereco(self):
         Comprador.when.called_with(
             name="Nome", ip="IP", is_first_purchase=True, is_reliable=False, buyer_type=1, email="email", address="a"
         ).should.throw(ValueError, u"O parâmetro address deve ser do tipo EntidadeSerializavel")
@@ -242,7 +242,7 @@ class TestItem(mox.MoxTestBase):
             "Price": 100,
         })
 
-    def test_valida_tipo_de_atributos(self):
+    def test_valida_tipo_atributos(self):
         Item.when.called_with(
             reference="CODITEM01", description="TV 43", category="Eletronico", quantity=2, price=100, attributes=["A"]
         ).should.throw(ValueError, u"O parâmetro attributes deve ser uma lista de EntidadeSerializavel")
@@ -295,15 +295,15 @@ class TestPedido(mox.MoxTestBase):
         pedido = Pedido(**self.dados_pedido)
         pedido.to_dict().should.be.equal(self.esperado)
 
-    def test_valida_tipo_de_comprador(self):
+    def test_valida_tipo_comprador(self):
         self.dados_pedido["buyer"] = self.mox.CreateMockAnything()
         Pedido.when.called_with(**self.dados_pedido).should.throw(ValueError, u"O parâmetro buyer deve ser do tipo EntidadeSerializavel")
 
-    def test_valida_tipo_de_items(self):
+    def test_valida_tipo_items(self):
         self.dados_pedido["items"] = [self.mox.CreateMockAnything()]
         Pedido.when.called_with(**self.dados_pedido).should.throw(ValueError, u"O parâmetro items deve ser uma lista de EntidadeSerializavel")
 
-    def test_valida_tipo_de_forma_de_envio(self):
+    def test_valida_tipo_forma_envio(self):
         self.dados_pedido["shipping"] = self.mox.CreateMockAnything()
         Pedido.when.called_with(**self.dados_pedido).should.throw(ValueError, u"O parâmetro shipping deve ser do tipo EntidadeSerializavel")
 
@@ -344,5 +344,5 @@ class TestPedido(mox.MoxTestBase):
         atributos = [AtributoDeItem(key="Cor", value="Azul"), AtributoDeItem(key="Peso", value="7kg")]
         self.dados_pedido["items"] = [Item(reference="CODITEM01", description="TV 43", category="Eletronico", quantity=2, price=100, attributes=atributos)]
         pedido = Pedido(**self.dados_pedido)
-        pedido.to_dict().should.be.equal(DADOS_DE_ENVIO_MODELO)
+        pedido.to_dict().should.be.equal(DADOS_ENVIO_MODELO)
 
