@@ -14,10 +14,6 @@ class KoinInvalido(Exception):
 class ChaveValor(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {'key': 'Key', 'value': 'Value'}
 
-    # def __init__(self, key, value):
-    #     self.key = key
-    #     self.value = value
-
 
 class Item(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {
@@ -29,35 +25,15 @@ class Item(entidades.BaseParaPropriedade):
         'attributes': 'Attibutes'
     }
 
-    # def __init__(self, reference, description, category, quantity, price, attributes):
-    #     self.reference = reference
-    #     self.description = description
-    #     self.category = category
-    #     self.quantity = quantity
-    #     self.price = price
-    #     self.attributes = attributes
-
 
 class FormaEnvio(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {
         'price': 'Price', 'delivery_date': 'DeliveryDate', 'shipping_type': 'ShippingType', 'address': 'Address'
     }
 
-    # def __init__(self, price, delivery_date, shipping_type=1, address=None):
-    #     self.price = price
-    #     self.delivery_date = delivery_date
-    #     self.shipping_type = shipping_type
-    #     self.address = address
-
 
 class Telefone(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {'area_code': 'AreaCode', 'number': 'Number', 'phone_type': 'PhoneType'}
-
-    # def __init__(self, number, phone_type):
-    #     numero = self.formatador.converte_tel_em_tupla_com_ddd(number)
-    #     self.area_code = numero[0]
-    #     self.number = numero[1]
-    #     self.phone_type = phone_type
 
 
 class Endereco(entidades.BaseParaPropriedade):
@@ -72,17 +48,6 @@ class Endereco(entidades.BaseParaPropriedade):
         'zip_code': 'ZipCode',
         'address_type': 'AddressType',
     }
-
-    # def __init__(self, **dados):
-    #     self.city = dados['city']
-    #     self.state = dados['state']
-    #     self.country = dados['country']
-    #     self.district = dados['district']
-    #     self.street = dados['street']
-    #     self.number = dados['number']
-    #     self.complement = dados['complement']
-    #     self.zip_code = dados['zip_code']
-    #     self.address_type = dados['address_type']
 
 
 class Comprador(entidades.BaseParaPropriedade):

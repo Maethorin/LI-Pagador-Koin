@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import time
 from datetime import datetime
+from li_common.comunicacao import requisicao
 
 from pagador import servicos
 
@@ -81,7 +82,10 @@ class EntregaPagamento(servicos.EntregaPagamento):
 
     def envia_pagamento(self, tentativa=1):
         self.dados_enviados = self.malote.to_dict()
-        self.resposta = self.conexao.post(self.url, self.dados_enviados)
+        try:
+            self.resposta = self.conexao.post(self.url, self.dados_enviados)
+        except requisicao.RespostaJsonInvalida:
+            raise self.EnvioNaoRealizado(u'Ocorreu um erro no envio dos dados para a Koin.', self.loja_id, self.pedido.numero, dados_envio=self.malote.to_dict(), erros=[self.resposta.conteudo])
 
     def processa_dados_pagamento(self):
         self.resultado = self._processa_resposta()
