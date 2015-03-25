@@ -185,10 +185,10 @@ class Malote(entidades.Malote):
 
 
 class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
-    _campos = ['ativo', 'token', 'senha']
-    _codigo_gateway = CODIGO_GATEWAY
 
     def __init__(self, loja_id, codigo_pagamento=None):
+        self.campos = ['ativo', 'token', 'senha']
+        self.codigo_gateway = CODIGO_GATEWAY
+        self.eh_gateway = True
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
-        self.preencher_gateway(self._codigo_gateway, self._campos)
         self.formulario = cadastro.FormularioKoin()
