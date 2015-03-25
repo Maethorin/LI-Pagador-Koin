@@ -191,4 +191,5 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
         self.codigo_gateway = CODIGO_GATEWAY
         self.eh_gateway = True
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem=eh_listagem)
-        self.formulario = cadastro.FormularioKoin()
+        if not self.eh_listagem:
+            self.formulario = cadastro.FormularioKoin()
