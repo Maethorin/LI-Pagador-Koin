@@ -186,9 +186,9 @@ class Malote(entidades.Malote):
 
 class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
 
-    def __init__(self, loja_id, codigo_pagamento=None):
+    def __init__(self, loja_id, codigo_pagamento=None, eh_listagem=False):
         self.campos = ['ativo', 'token', 'senha']
         self.codigo_gateway = CODIGO_GATEWAY
         self.eh_gateway = True
-        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
+        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem)
         self.formulario = cadastro.FormularioKoin()
