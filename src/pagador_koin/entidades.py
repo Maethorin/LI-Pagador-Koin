@@ -190,5 +190,5 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
         self.campos = ['ativo', 'token', 'senha']
         self.codigo_gateway = CODIGO_GATEWAY
         self.eh_gateway = True
-        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem)
+        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem=eh_listagem)
         self.formulario = cadastro.FormularioKoin()
