@@ -21,7 +21,7 @@ class KoinConfiguracaoMeioDePagamentoDaLoja(TestBase):
         response = self.app.get(self.url, follow_redirects=True, headers={'authorization': 'chave_aplicacao CHAVE-TESTE'})
         json.loads(response.data).should.be.equal({u'metadados': {u'api': u'API Pagador', u'resultado': u'sucesso', u'versao': u'1.0'}, u'sucesso': {u'configuracao_pagamento': u'KOIN'}})
         response.status_code.should.be.equal(200)
-        configuracao_mock.assert_called_with(loja_id=8, codigo_pagamento='koin')
+        configuracao_mock.assert_called_with(loja_id=8, codigo_pagamento='koin', eh_listagem=False)
 
     @mock.patch('pagador_koin.entidades.ConfiguracaoMeioPagamento')
     def test_deve_grava_dados_koin(self, configuracao_mock):
