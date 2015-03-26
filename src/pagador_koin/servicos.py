@@ -85,7 +85,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
         try:
             self.resposta = self.conexao.post(self.url, self.dados_enviados)
         except requisicao.RespostaJsonInvalida, ex:
-            raise self.EnvioNaoRealizado(u'Ocorreu um erro no envio dos dados para a Koin.', self.loja_id, self.pedido.numero, dados_envio=self.malote.to_dict(), erros=[str(ex)])
+            raise self.EnvioNaoRealizado(u'Ocorreu um erro no envio dos dados para a Koin.', self.loja_id, self.pedido.numero, dados_envio=self.malote.to_dict(), erros=[ex.message])
 
     def processa_dados_pagamento(self):
         self.resultado = self._processa_resposta()
