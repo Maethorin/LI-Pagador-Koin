@@ -59,9 +59,9 @@ class Comprador(entidades.BaseParaPropriedade):
         'buyer_type': 'BuyerType',
         'email': 'Email',
         'address': 'Address',
-        'documentos': 'Documents',
+        'documents': 'Documents',
         'phones': 'Phones',
-        'addtionanal_info': 'AdditionalInfo'
+        'additional_info': 'AdditionalInfo'
     }
 
 
@@ -90,8 +90,8 @@ class Malote(entidades.Malote):
         self.currency = 'BRL'
         self.request_date = None
         self.price = Decimal('0.00')
-        self.is_gift = False,
-        self.payment_type = 21,
+        self.is_gift = False
+        self.payment_type = 21
         self.buyer = None
         self.shipping = None
         self.items = []

@@ -5,12 +5,12 @@ import hmac
 import time
 from datetime import datetime
 from li_common.comunicacao import requisicao
+from pagador import servicos, settings
 
-from pagador import servicos
 
-
-# REQUEST_URL = 'http://api.koin.{}.br/V1/TransactionService.svc/Request'.format('net' if settings.DEBUG else 'com')
 REQUEST_URL = 'http://api.koin.com.br/V1/TransactionService.svc/Request'
+if settings.DEBUG:
+    REQUEST_URL = 'http://api.qa.koin.in/V1/TransactionService.svc/Request'
 
 
 MENSAGENS_RETORNO = {
@@ -46,14 +46,16 @@ MENSAGENS_RETORNO = {
 
 class Credenciador(servicos.Credenciador):
     def __init__(self, tipo=None, configuracao=None):
-        super(Credenciador, self).__init__(tipo, configuracao)
-        self.tipo = self.TipoAutenticacao.cabecalho_http
+        super(Credenciador, self).__init__(tipo=self.TipoAutenticacao.cabecalho_http, configuracao=configuracao)
         self.secret_key = str(getattr(self.configuracao, 'senha', ''))
         self.consumer_key = str(getattr(self.configuracao, 'token', ''))
+        self._timestamp = None
 
     @property
     def timestamp(self):
-        return int(time.mktime(datetime.utcnow().timetuple()))
+        if not self._timestamp:
+            self._timestamp = int(time.mktime(datetime.utcnow().timetuple()))
+        return self._timestamp
 
     @property
     def corpo_hmac(self):
@@ -91,6 +93,8 @@ class EntregaPagamento(servicos.EntregaPagamento):
         self.resultado = self._processa_resposta()
 
     def _processa_resposta(self):
+        if not self.resposta:
+            return {"mensagem": u"Ocorreu um erro no envio dos dados para a Koin.", "status_code": 400}
         status_code = self.resposta.status_code
         if self.resposta.timeout:
             return {"mensagem": u"O servidor da Koin não respondeu em tempo útil.", "status_code": status_code}
