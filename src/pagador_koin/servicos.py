@@ -105,6 +105,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
             mensagem = self.resposta.conteudo.get("Message", None)
             if code == 200:
                 return {"mensagem": mensagem or "Compra aprovada pela Koin.", "status": status_code}
+            self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
             if not mensagem:
                 mensagem = MENSAGENS_RETORNO[str(code)]
             return {"mensagem": mensagem, "status": int(code)}
