@@ -7,10 +7,6 @@ from pagador_koin import cadastro
 CODIGO_GATEWAY = 9
 
 
-class KoinInvalido(Exception):
-    pass
-
-
 class ChaveValor(entidades.BaseParaPropriedade):
     _chaves_alternativas_para_serializacao = {'key': 'Key', 'value': 'Value'}
 
@@ -104,7 +100,7 @@ class Malote(entidades.Malote):
         try:
             self.fraud_id = dados['fraud_id']
         except KeyError:
-            raise KoinInvalido(u'Não foi enviado o fraud id para esse pagamento')
+            raise self.DadosInvalidos(u'Não foi enviado o fraud id para esse pagamento')
         self.reference = '{:03d}'.format(pedido.numero)
         self.request_date = self.formatador.formata_data(pedido.data_criacao)
         self.price = self.formatador.formata_decimal(pedido.valor_total)
