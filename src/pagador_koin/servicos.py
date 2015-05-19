@@ -101,14 +101,16 @@ class EntregaPagamento(servicos.EntregaPagamento):
         if self.resposta.nao_autenticado:
             return {"mensagem": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status_code": status_code}
         if self.resposta.sucesso:
-            code = self.resposta.conteudo.get("Code", 0)
-            mensagem = self.resposta.conteudo.get("Message", None)
-            if code == 200:
-                self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO
-                return {"mensagem": mensagem or "Compra aprovada pela Koin.", "status": status_code}
-            self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
-            if not mensagem:
-                mensagem = MENSAGENS_RETORNO[str(code)]
-            return {"mensagem": mensagem, "status": int(code)}
+            if type(self.resposta.conteudo) is dict:
+                code = self.resposta.conteudo.get("Code", 0)
+                mensagem = self.resposta.conteudo.get("Message", None)
+                if code == 200:
+                    self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO
+                    return {"mensagem": mensagem or "Compra aprovada pela Koin.", "status": status_code}
+                self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
+                if not mensagem:
+                    mensagem = MENSAGENS_RETORNO[str(code)]
+                return {"mensagem": mensagem, "status": int(code)}
+            return {"mensagem": u'A koin não enviou uma resposta válida.', "status": 500}
         self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
         return {"mensagem": u'Sua compra não foi aprovada. Por favor, escolha outra forma de pagamento', "status_code": status_code}
