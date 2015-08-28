@@ -151,7 +151,8 @@ class Malote(entidades.Malote):
 
     def informacao_adicional_comprador(self, pedido):
         if pedido.endereco_cliente['tipo'] == "PF":
-            return [ChaveValor(key="Birthday", value=self.formatador.formata_data(pedido.cliente['data_nascimento'], hora=False))]
+            if pedido.cliente['data_nascimento']:
+                return [ChaveValor(key="Birthday", value=self.formatador.formata_data(pedido.cliente['data_nascimento'], hora=False))]
         return [ChaveValor(key="RazaoSocial", value=self.formatador.trata_unicode_com_limite(pedido.endereco_cliente['razao_social']))]
 
     def telefones(self, pedido):
