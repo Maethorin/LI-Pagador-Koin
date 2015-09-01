@@ -6,11 +6,11 @@ import json
 import time
 from datetime import datetime
 from li_common.comunicacao import requisicao
-from pagador import servicos, settings
+from pagador import servicos, configuracoes
 
 
 REQUEST_URL = 'http://api.koin.com.br/V1/TransactionService.svc/Request'
-if settings.DEBUG:
+if configuracoes.DEBUG:
     REQUEST_URL = 'http://api.qa.koin.in/V1/TransactionService.svc/Request'
 
 
