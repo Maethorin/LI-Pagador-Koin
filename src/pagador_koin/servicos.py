@@ -15,33 +15,35 @@ if configuracoes.DEBUG:
 
 
 MENSAGENS_RETORNO = {
-    "0": u"Código de retorno inválido",
-    "200": u"Compra aprovada pela Koin.",
-    "301": u"Código de verificação de fraude não informado",
-    "302": u"A análise / verificação de risco não autorizou o processamento desta operação",
-    "304": u"A análise / verificação de risco não autorizou o processamento desta operação",
-    "500": u"Houve um erro ao processar sua compra com Koin. Por favor, tente novamente.",
-    "501": u"Não foi possível identificar esta loja. Por favor, tente novamente ou entre em contato com o responsável pela loja.",
-    "502": u"Por favor, verifique o endereço de entrega informado. Ele deve ser igual ao utilizado em sua conta Koin.",
-    "503": u"Por favor, verifique o E-mail informado. Ele precisa ser o mesmo utilizado em sua conta Koin.",
-    "504": u"Por favor, verifique o telefone informado. Ele precisa ser o mesmo utilizado em sua conta Koin.",
-    "505": u"Não foi possível processar o seu pedido devido a uma pendência em seu cadastro Koin. Entre em contato com a Koin para maiores informações.",
-    "506": u"Não foi possível processar a sua compra devido a uma pendência em seu cadastro, por gentileza, contate o vendedor.",
-    "507": u"Não foi possível localizar o seu endereço de entrega, verifique o CEP informado e tente novamente.",
-    "508": u"Esta loja não está credenciada para processar pagamentos com Koin. Por favor, contate o vendedor.",
-    "509": u"Ocorreu um erro em seu cadastro. Favor entrar em contato com a Koin.",
-    "510": u"Não foi possível localizar o seu endereço de entrega. Verifique o CEP informado e tente novamente.",
-    "511": u"Essa transação já foi enviada para o Koin anteriormente.",
-    "601": u"O valor do seu pedido precisa ser maior do que zero. Verifique o carrinho de compras e tente novamente.",
-    "602": u"Não encontramos nenhum produto no carrinho de compras. Por favor, tente novamente.",
-    "603": u"O número do seu pedido não é valido. por gentileza, contate o vendedor e tente novamente.",
-    "604": u"O código do produto está incorreto. Contate o vendedor e tente novamente.",
-    "605": u"Por gentileza, informe o valor do produto.",
-    "606": u"Por gentileza, informe a quantidade do produto.",
-    "701": u"O seu pedido não poderá ser processado, pois o valor dele excede o seu limite de compras com Koin. Entre em contato com a Koin para maiores informações.",
-    "702": u"O limite de vendas da loja foi atingido. Por gentileza, contate o vendedor.",
-    "998": u"O pedido {} já foi utilizado no processamento de outra transação.",
-    "999": u"Existe um erro nos dados informados. Verifique-os e tente novamente.",
+    '0': u'Código de retorno inválido',
+    '200': u'Compra aprovada pela Koin.',
+    '301': u'Código de verificação de fraude não informado',
+    '302': u'A análise / verificação de risco não autorizou o processamento desta operação',
+    '304': u'A análise / verificação de risco não autorizou o processamento desta operação',
+    '312': u'O pagamento do pedido foi enviado e encontra-se em análise. Você será informado por e-mail sobre o resultado.',
+    '314': u'O pagamento do pedido foi enviado e encontra-se em análise. Você será informado por e-mail sobre o resultado.',
+    '500': u'Houve um erro ao processar sua compra com Koin. Por favor, tente novamente.',
+    '501': u'Não foi possível identificar esta loja. Por favor, tente novamente ou entre em contato com o responsável pela loja.',
+    '502': u'Por favor, verifique o endereço de entrega informado. Ele deve ser igual ao utilizado em sua conta Koin.',
+    '503': u'Por favor, verifique o E-mail informado. Ele precisa ser o mesmo utilizado em sua conta Koin.',
+    '504': u'Por favor, verifique o telefone informado. Ele precisa ser o mesmo utilizado em sua conta Koin.',
+    '505': u'Não foi possível processar o seu pedido devido a uma pendência em seu cadastro Koin. Entre em contato com a Koin para maiores informações.',
+    '506': u'Não foi possível processar a sua compra devido a uma pendência em seu cadastro, por gentileza, contate o vendedor.',
+    '507': u'Não foi possível localizar o seu endereço de entrega, verifique o CEP informado e tente novamente.',
+    '508': u'Esta loja não está credenciada para processar pagamentos com Koin. Por favor, contate o vendedor.',
+    '509': u'Ocorreu um erro em seu cadastro. Favor entrar em contato com a Koin.',
+    '510': u'Não foi possível localizar o seu endereço de entrega. Verifique o CEP informado e tente novamente.',
+    '511': u'Essa transação já foi enviada para o Koin anteriormente.',
+    '601': u'O valor do seu pedido precisa ser maior do que zero. Verifique o carrinho de compras e tente novamente.',
+    '602': u'Não encontramos nenhum produto no carrinho de compras. Por favor, tente novamente.',
+    '603': u'O número do seu pedido não é valido. por gentileza, contate o vendedor e tente novamente.',
+    '604': u'O código do produto está incorreto. Contate o vendedor e tente novamente.',
+    '605': u'Por gentileza, informe o valor do produto.',
+    '606': u'Por gentileza, informe a quantidade do produto.',
+    '701': u'O seu pedido não poderá ser processado, pois o valor dele excede o seu limite de compras com Koin. Entre em contato com a Koin para maiores informações.',
+    '702': u'O limite de vendas da loja foi atingido. Por gentileza, contate o vendedor.',
+    '998': u'O pedido já foi enviado está em processo de análise. Você será informado por e-mail.',
+    '999': u'Existe um erro nos dados informados. Verifique-os e tente novamente.',
 }
 
 
@@ -93,14 +95,22 @@ class EntregaPagamento(servicos.EntregaPagamento):
     def processa_dados_pagamento(self):
         self.resultado = self._processa_resposta()
 
+    def define_mensagem(self, mensagem):
+        self.dados_pagamento = {
+            'conteudo_json': {
+                'mensagem_retorno': mensagem,
+            }
+        }
+        return mensagem
+
     def _processa_resposta(self):
         if not self.resposta:
-            return {"mensagem": u"Ocorreu um erro no envio dos dados para a Koin.", "status_code": 400}
+            return {'mensagem': self.define_mensagem(u'Ocorreu um erro no envio dos dados para a Koin.'), 'status_code': 400}
         status_code = self.resposta.status_code
         if self.resposta.timeout:
-            return {"mensagem": u"O servidor da Koin não respondeu em tempo útil.", "status_code": status_code}
+            return {'mensagem': self.define_mensagem(u'O servidor da Koin não respondeu em tempo útil.'), 'status_code': status_code}
         if self.resposta.nao_autenticado:
-            return {"mensagem": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status_code": status_code}
+            return {'mensagem': self.define_mensagem(u'Autenticação da loja com a Koin Falhou. Contate o SAC da loja.'), 'status_code': status_code}
         if self.resposta.sucesso:
             if isinstance(self.resposta.conteudo, dict):
                 mensagem, code = self._trata_conteudo_dict(status_code)
@@ -109,17 +119,20 @@ class EntregaPagamento(servicos.EntregaPagamento):
                     self.resposta.conteudo = json.loads(self.resposta.conteudo)
                     mensagem, code = self._trata_conteudo_dict(status_code)
                 except ValueError:
-                    return {"mensagem": u'A Koin não enviou uma resposta válida.', "status": 500}
-            return {"mensagem": mensagem, "status": int(code)}
+                    return {'mensagem': self.define_mensagem(u'A Koin não enviou uma resposta válida.'), 'status': 500}
+            return {'mensagem': self.define_mensagem(mensagem), 'status': int(code)}
         self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
-        return {"mensagem": u'Sua compra não foi aprovada. Por favor, escolha outra forma de pagamento', "status_code": status_code}
+        return {'mensagem': self.define_mensagem(u'Sua compra não foi aprovada. Por favor, escolha outra forma de pagamento'), 'status_code': status_code}
 
     def _trata_conteudo_dict(self, status_code):
-        code = self.resposta.conteudo.get("Code", 0)
-        mensagem = self.resposta.conteudo.get("Message", None)
+        code = self.resposta.conteudo.get('Code', 0)
+        mensagem = self.resposta.conteudo.get('Message', None)
         if code == 200:
             self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO
-            return mensagem or "Compra aprovada pela Koin.", status_code
+            return mensagem or 'Compra aprovada pela Koin.', status_code
+        if code in [312, 314, 998]:
+            self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PAGTO_EM_ANALISE
+            return mensagem or u'O pagamento do pedido foi enviado e encontra-se em análise. Você será informado por e-mail sobre o resultado.', status_code
         self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
         if not mensagem:
             mensagem = MENSAGENS_RETORNO[str(code)]
