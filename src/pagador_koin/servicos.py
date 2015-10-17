@@ -87,10 +87,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
 
     def envia_pagamento(self, tentativa=1):
         self.dados_enviados = self.malote.to_dict()
-        try:
-            self.resposta = self.conexao.post(self.url, self.dados_enviados)
-        except requisicao.RespostaJsonInvalida, ex:
-            raise self.EnvioNaoRealizado(u'Ocorreu um erro no envio dos dados para a Koin.', self.loja_id, self.pedido.numero, dados_envio=self.malote.to_dict(), erros=[ex.message])
+        self.resposta = self.conexao.post(self.url, self.dados_enviados)
 
     def processa_dados_pagamento(self):
         self.resultado = self._processa_resposta()
@@ -110,7 +107,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
         if self.resposta.timeout:
             return {'mensagem': self.define_mensagem(u'O servidor da Koin não respondeu em tempo útil.'), 'status_code': status_code}
         if self.resposta.nao_autenticado:
-            return {'mensagem': self.define_mensagem(u'Autenticação da loja com a Koin Falhou. Contate o SAC da loja.'), 'status_code': status_code}
+            return {'mensagem': self.define_mensagem(u'Não conseguimos nos comunicar com a Koin. Por favor, contate o SAC da loja.'), 'status_code': status_code}
         if self.resposta.sucesso:
             if isinstance(self.resposta.conteudo, dict):
                 mensagem, code = self._trata_conteudo_dict(status_code)

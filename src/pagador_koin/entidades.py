@@ -190,6 +190,7 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
         self.campos = ['ativo', 'token', 'senha']
         self.codigo_gateway = CODIGO_GATEWAY
         self.eh_gateway = True
+        self.src_js_sdk = '//resources.koin.com.br/scripts/koin.min.js'
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem=eh_listagem)
         if not self.eh_listagem:
             self.formulario = cadastro.FormularioKoin()
