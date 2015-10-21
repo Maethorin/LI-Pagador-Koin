@@ -102,35 +102,35 @@ class EntregaPagamento(servicos.EntregaPagamento):
 
     def _processa_resposta(self):
         if not self.resposta:
-            return {'mensagem': self.define_mensagem(u'Ocorreu um erro no envio dos dados para a Koin.'), 'status_code': 400}
+            return {'mensagem': self.define_mensagem(u'Ocorreu um erro no envio dos dados para a Koin.'), 'status_code': 400, 'fatal': True}
         status_code = self.resposta.status_code
         if self.resposta.timeout:
-            return {'mensagem': self.define_mensagem(u'O servidor da Koin não respondeu em tempo útil.'), 'status_code': status_code}
+            return {'mensagem': self.define_mensagem(u'O servidor da Koin não respondeu em tempo útil.'), 'status_code': status_code, 'fatal': True}
         if self.resposta.nao_autenticado:
-            return {'mensagem': self.define_mensagem(u'Não conseguimos nos comunicar com a Koin. Por favor, contate o SAC da loja.'), 'status_code': status_code}
+            return {'mensagem': self.define_mensagem(u'Não conseguimos nos comunicar com a Koin. Por favor, contate o SAC da loja.'), 'status_code': status_code, 'fatal': True}
         if self.resposta.sucesso:
             if isinstance(self.resposta.conteudo, dict):
-                mensagem, code = self._trata_conteudo_dict(status_code)
+                mensagem, code, pago = self._trata_conteudo_dict(status_code)
             else:
                 try:
                     self.resposta.conteudo = json.loads(self.resposta.conteudo)
-                    mensagem, code = self._trata_conteudo_dict(status_code)
+                    mensagem, code, pago = self._trata_conteudo_dict(status_code)
                 except ValueError:
-                    return {'mensagem': self.define_mensagem(u'A Koin não enviou uma resposta válida.'), 'status': 500}
-            return {'mensagem': self.define_mensagem(mensagem), 'status': int(code)}
+                    return {'mensagem': self.define_mensagem(u'A Koin não enviou uma resposta válida.'), 'status': 500, 'fatal': True}
+            return {'mensagem': self.define_mensagem(mensagem), 'status': int(code), 'pago': pago }
         self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
-        return {'mensagem': self.define_mensagem(u'Sua compra não foi aprovada. Por favor, escolha outra forma de pagamento'), 'status_code': status_code}
+        return {'mensagem': self.define_mensagem(u'Sua compra não foi aprovada. Por favor, escolha outra forma de pagamento'), 'status_code': status_code, 'pago': False}
 
     def _trata_conteudo_dict(self, status_code):
         code = self.resposta.conteudo.get('Code', 0)
         mensagem = self.resposta.conteudo.get('Message', None)
         if code == 200:
             self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO
-            return mensagem or 'Compra aprovada pela Koin.', status_code
+            return mensagem or 'Compra aprovada pela Koin.', status_code, True
         if code in [312, 314, 998]:
             self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PAGTO_EM_ANALISE
-            return mensagem or u'O pagamento do pedido foi enviado e encontra-se em análise. Você será informado por e-mail sobre o resultado.', status_code
+            return mensagem or u'O pagamento do pedido foi enviado e encontra-se em análise. Você será informado por e-mail sobre o resultado.', status_code, True
         self.situacao_pedido = servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
         if not mensagem:
             mensagem = MENSAGENS_RETORNO[str(code)]
-        return mensagem, code
+        return mensagem, code, False
